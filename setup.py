@@ -19,6 +19,5 @@ setup(
         "scikit-learn",
         "tqdm",
         "xlrd",
-        "python",
     ],
 )
