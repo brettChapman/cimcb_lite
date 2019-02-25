@@ -6,4 +6,3 @@ scikit-learn
 statsmodels
 tqdm
 xlrd
-python
