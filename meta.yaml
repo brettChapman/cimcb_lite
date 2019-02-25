@@ -1,0 +1,34 @@
+package:
+  name: cimcb_lite
+  version: 0.0.1
+
+source:
+  fn: cimcb_lite-0.0.1.tar.gz
+  url: https://github.com/KevinMMendez/cimcb_lite/cimcb_lite-0.0.1.tar.gz
+  sha256: 
+
+
+requirements:
+  build:
+    - numpy
+    - pandas
+    - bokeh
+    - scipy
+    - scikit-learn
+    - tqdm
+    - xlrd
+    - python
+
+  run:
+    - numpy
+    - pandas
+    - bokeh
+    - scipy
+    - scikit-learn
+    - tqdm
+    - xlrd
+    - python
+
+about:
+  home: https://github.com/CIMCB
+  license: "http://www.apache.org/licenses/LICENSE-2.0.html"
