@@ -44,8 +44,8 @@ class BaseModel(ABC):
             Y_true = self.Y
             Y_pred = self.Y_pred.flatten()
         else:
-            Y_true = evals[0]
-            Y_pred = evals[1]
+            Y_true = np.array(evals[0])
+            Y_pred = np.array(evals[1])
             if len(np.unique(Y_true)) != 2:
                 raise ValueError("evalute can't be used as Y_true is not binary.")
             if len(Y_true) != len(Y_pred):
