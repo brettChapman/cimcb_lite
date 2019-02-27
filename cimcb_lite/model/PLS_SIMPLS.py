@@ -53,13 +53,16 @@ class PLS_SIMPLS(BaseModel):
         # Error checks
         if np.isnan(X).any() is True:
             raise ValueError("NaNs found in X.")
-        for i in range(len(Y)):
-            if Y[i] not in [0, 1]:
-                raise ValueError("non-binary items found in Y.")
+        if len(np.unique(Y)) != 2:
+            raise ValueError("Y needs to have 2 groups. There is {}".format(len(np.unique(Y))))
+        if np.sort(np.unique(Y))[0] != 0:
+            raise ValueError("Y should only contain 0s and 1s."
+        if np.sort(np.unique(Y))[1] != 1:
+            raise ValueError("Y should only contain 0s and 1s."
         if len(X) != len(Y):  # or X.shape[0] != Y.shape[0] ... what is clearer?
             raise ValueError("length of X does not match length of Y.")
         
-        # Calculates and store attributes of PLS SIMPALS
+        # Calculates and store attributes of PLS SIMPLS
         Xscores, Yscores, Xloadings, Yloadings, Weights, Beta = self.pls_simpls(X, Y, ncomp=self.n_component)
         self.model.x_scores_ = Xscores
         self.model.y_scores_ = Yscores
@@ -73,9 +76,9 @@ class PLS_SIMPLS(BaseModel):
         X0 = X - meanX
         self.model.pctvar_ = (sum(abs(self.model.x_loadings_) ** 2) / sum(sum(abs(X0) ** 2)) * 100)
         self.model.coef_ = Beta[1:]
-        W0 = Weights/np.sqrt(np.sum(Weights**2, axis=0))
-        sumSq = np.sum(Xscores**2, axis=0)* np.sum(Yloadings**2, axis=0)
-        self.model.vip_ = np.sqrt(len(Xloadings) * np.sum(sumSq * W0**2, axis=1) / np.sum(sumSq, axis=0))
+        W0 = Weights / np.sqrt(np.sum(Weights ** 2, axis=0))
+        sumSq = np.sum(Xscores ** 2, axis=0) * np.sum(Yloadings ** 2, axis=0)
+        self.model.vip_ = np.sqrt(len(Xloadings) * np.sum(sumSq * W0 ** 2, axis=1) / np.sum(sumSq, axis=0))
 
         # Calculate and return Y predicted value
         newX = np.insert(X, 0, np.ones(len(X)), axis=1)
