@@ -36,25 +36,33 @@ class BaseModel(ABC):
         """A list of attributes for bootstrap resampling."""
         pass
 
-    def evaluate(self, specificity=False, cutoffscore=False, bootnum=100):
+    def evaluate(self, evals='default', specificity=False, cutoffscore=False, bootnum=100):
         """Returns a figure containing a Violin plot, Distribution plot, ROC plot and Binary Metrics statistics."""
-
-        # Calculate binary_metrics and store as pandas table
-        xrows_num = len(self.X)
-        xcols_num = len(self.X.T)
+        
+        # if evals is 'default', set Y_pred and Y_true based on train method
+        if evals is 'default':
+            Y_true = self.Y
+            Y_pred = self.Y_pred.flatten()
+        else:
+            Y_true = evals[0]
+            Y_pred = evals[1]
+            if len(np.unique(Y_true)) != 2:
+                raise ValueError("evalute can't be used as Y_true is not binary.")
+            if len(Y_true) != len(Y_pred):
+                raise ValueError("evaluate can't be used as length of Y_true does not match length of Y_pred.")
 
         # Violin plot
-        violin_bokeh = boxplot(self.Y_pred.flatten(), self.Y, title="", xlabel="Class", ylabel="Predicted Score", violin=True, color=["#FFCCCC", "#CCE5FF"], width=320, height=315)
+        violin_bokeh = boxplot(Y_pred, Y_true, title="", xlabel="Class", ylabel="Predicted Score", violin=True, color=["#FFCCCC", "#CCE5FF"], width=320, height=315)
 
         # Distribution plot
-        dist_bokeh = distribution(self.Y_pred, group=self.Y, hist=False, kde=True, title="", xlabel="Predicted Score", ylabel="p.d.f.", width=320, height=315)
+        dist_bokeh = distribution(Y_pred, group=Y_true, hist=False, kde=True, title="", xlabel="Predicted Score", ylabel="p.d.f.", width=320, height=315)
 
         ## ROC plot
         # Set bootstrap indices
         bootsam_Y = []
         bootsam_ypred = []
         for i in range(bootnum):
-            Y_res, ypred_res = resample(self.Y, self.Y_pred)
+            Y_res, ypred_res = resample(Y_true, Y_pred)
             bootsam_Y.append(Y_res)
             bootsam_ypred.append(ypred_res)
 
