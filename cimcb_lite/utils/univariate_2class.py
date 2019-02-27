@@ -13,7 +13,7 @@ def univariate_2class(DataTable, PeakTable, group, posclass, parametric=True):
     if group not in DataTable:
         raise ValueError("Column '{}' does not exist in DataTable".format(group))
     if posclass not in DataTable[group].unique():
-        raise ValueError("Positive class was not found in group column.")
+        raise ValueError("Positive class was not found in {} column.".format(group))
     if len(DataTable[group].unique()) != 2:
         raise ValueError("Column '{}' should have exactly 2 groups".format(group))
     
