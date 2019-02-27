@@ -36,7 +36,7 @@ class PLS_SIMPLS(BaseModel):
   
     """
 
-    bootlist = ["model.vip_", "model.coef_",]
+    bootlist = ["model.vip_", "model.coef_"]
 
     def __init__(self, n_components=2):
         self.model = PLSRegression()  # Should change this to an empty model
@@ -56,10 +56,10 @@ class PLS_SIMPLS(BaseModel):
         if len(np.unique(Y)) != 2:
             raise ValueError("Y needs to have 2 groups. There is {}".format(len(np.unique(Y))))
         if np.sort(np.unique(Y))[0] != 0:
-            raise ValueError("Y should only contain 0s and 1s."
+            raise ValueError("Y should only contain 0s and 1s.")
         if np.sort(np.unique(Y))[1] != 1:
-            raise ValueError("Y should only contain 0s and 1s."
-        if len(X) != len(Y):  # or X.shape[0] != Y.shape[0] ... what is clearer?
+            raise ValueError("Y should only contain 0s and 1s.")
+        if len(X) != len(Y): 
             raise ValueError("length of X does not match length of Y.")
         
         # Calculates and store attributes of PLS SIMPLS
