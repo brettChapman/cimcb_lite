@@ -5,13 +5,15 @@ from statsmodels.stats.multitest import multipletests
 from .table_check import table_check
 
 
-def univariate_2class(DataTable, PeakTable, group='Class', parametric=True):
+def univariate_2class(DataTable, PeakTable, group, posclass, parametric=True):
     """Creates a table of univariate statistics (2 class)."""
     
     # Error checks
     table_check(DataTable, PeakTable, print_statement=False)
     if group not in DataTable:
         raise ValueError("Column '{}' does not exist in DataTable".format(group))
+    if posclass not in DataTable[group].unique():
+        raise ValueError("Positive class was not found in group column.")
     if len(DataTable[group].unique()) != 2:
         raise ValueError("Column '{}' should have exactly 2 groups".format(group))
     
@@ -19,9 +21,8 @@ def univariate_2class(DataTable, PeakTable, group='Class', parametric=True):
     peaklist = PeakTable['Name']
     x = DataTable[peaklist]
     y = DataTable[group]
-    group_unique = np.sort(np.unique(y)) 
-    x0 = x[y == group_unique[0]] 
-    x1 = x[y == group_unique[1]]
+    x1 = x[y == posclass] #x1 refers to posclass
+    x0 = x[y != posclass]
     
     # Create stats table (include Idx, Name and Label)
     stats = pd.DataFrame()
@@ -100,8 +101,6 @@ def univariate_2class(DataTable, PeakTable, group='Class', parametric=True):
     stats['PercTotalMissing'] = np.round(nanperc.values * 100, 3)
     
     #Calculating missing % for group 0, and group 1... 
-    x0 = x[y == 0] 
-    x1 = x[y == 1]
     nanperc_0 = x0.isnull().sum() / len(x0)
     nanperc_1 = x1.isnull().sum() / len(x1)
     stats['Perc0Missing'] = np.round(nanperc_0.values * 100, 3)
