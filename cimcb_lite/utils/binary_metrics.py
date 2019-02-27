@@ -10,7 +10,7 @@ def binary_metrics(Y_true, Y_pred, cut_off=0.5):
     
     # Binary statistics dictionary
     stats = {}
-    stats["R2"] = 1 - (sum((Y_true - Y_pred) ** 2) / sum((Y_true - np.mean(Y_pred)) ** 2))
+    stats["R2"] = 1 - (sum((Y_true - Y_pred) ** 2) / sum((Y_true - np.mean(Y)) ** 2))
     stats["auc"] = roc_auc_score(Y_true, Y_pred)
     stats["accuracy"] = (tp + tn) / (tp + tn + fp + fn)
     stats["precision"] = (tp) / (tp + fp)
