@@ -37,6 +37,6 @@ def scale(x, axis=0, ddof=1, method='auto', return_mu_sigma=False, mu='default',
         raise ValueError("Method has to be either 'auto', 'pareto', 'vast', or 'level'.")
     
     if return_mu_sigma is True: 
-        return z, mu, sigma
+        return mu, sigma
     else:
         return z
