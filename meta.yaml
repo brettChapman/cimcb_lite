@@ -1,6 +1,6 @@
 package:
   name: cimcb_lite
-  version: 0.0.1
+  version: 0.0.2
 
 source:
   fn: cimcb_lite-0.0.1.tar.gz
