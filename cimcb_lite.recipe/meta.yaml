@@ -1,0 +1,32 @@
+{% set data = load_setuptools() %}
+
+package:
+  name: cimcb_lite
+  version: 0.0.7
+
+source:
+  path: ../
+
+requirements:
+  build:
+    - numpy
+    - pandas
+    - bokeh
+    - scipy
+    - scikit-learn
+    - setuptools
+    - python
+    - tqdm
+    - xlrd
+
+  run:
+    - numpy
+    - pandas
+    - bokeh
+    - scipy
+    - scikit-learn
+    - tqdm
+    - xlrd
+
+about:
+  home: https://github.com/CIMCB
