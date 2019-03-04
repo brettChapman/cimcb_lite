@@ -11,3 +11,6 @@ pip install cimcb_lite
 ```
 
 ### conda install: 
+```console
+conda install -c cimcb cimcb_lite
+```
