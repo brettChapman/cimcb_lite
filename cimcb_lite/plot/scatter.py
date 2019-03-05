@@ -37,7 +37,7 @@ def scatter(x, y, label=None, group=None, title="Scatter Plot", xlabel="x", ylab
             col.append(col_palette[2])
     else:
         group_copy = group.copy()
-        group_unique = list(set(group_copy))
+        group_unique = np.sort(np.unique(group_copy))
         col = []
         for i in range(len(group)):
             if group[i] == group_unique[0]:
