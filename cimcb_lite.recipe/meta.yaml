@@ -1,11 +1,14 @@
-{% set data = load_setuptools() %}
-
 package:
   name: cimcb_lite
-  version: 0.0.8
+  version: 0.0.9
 
 source:
   path: ../
+
+build:
+  noarch: python
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
 
 requirements:
   build:
