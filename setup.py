@@ -17,6 +17,7 @@ setup(
         "bokeh",
         "scipy",
         "scikit-learn",
+        "statsmodels",
         "tqdm",
         "xlrd",
     ],
