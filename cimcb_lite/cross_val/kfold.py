@@ -75,7 +75,7 @@ class kfold(BaseCrossVal):
             stats_full_i = binary_metrics(self.Y, self.ypred_full[i])
             stats_cv_i = binary_metrics(self.Y, self.ypred_cv[i])
             # Add _cv to all metrics in stats_cv and change R2_cv to Q2
-            stats_cv_i = {f"{k}_cv": v for k, v in stats_cv_i.items()}
+            stats_cv_i = {k+'_cv': v for k, v in stats_cv_i.items()}
             stats_cv_i["Q2"] = stats_cv_i.pop("R2_cv")
             # Combine and append
             stats_combined = {**stats_full_i, **stats_cv_i}
