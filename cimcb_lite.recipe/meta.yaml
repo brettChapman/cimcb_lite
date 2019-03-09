@@ -1,6 +1,6 @@
 package:
   name: cimcb_lite
-  version: 0.0.11
+  version: 0.0.12
 
 source:
   path: ../
@@ -14,7 +14,7 @@ requirements:
   build:
     - numpy
     - pandas
-    - bokeh
+    - bokeh >=0.13.0
     - scipy
     - scikit-learn
     - setuptools
@@ -26,7 +26,7 @@ requirements:
   run:
     - numpy
     - pandas
-    - bokeh
+    - bokeh >=0.13.0
     - scipy
     - scikit-learn
     - statsmodels
