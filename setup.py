@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="cimcb_lite",
-    version="0.0.13",
+    version="0.0.14",
     description="This is a pre-release.",
     long_description=long_description,
     license="http://www.apache.org/licenses/LICENSE-2.0.html",
@@ -13,7 +13,7 @@ setup(
     packages=["cimcb_lite", "cimcb_lite.bootstrap", "cimcb_lite.cross_val", "cimcb_lite.model", "cimcb_lite.plot", "cimcb_lite.utils"],
     install_requires=[
         "numpy",
-        "pandas",
+        "pandas>=0.24.1",
         "bokeh>=0.13.0",
         "scipy",
         "scikit-learn",
