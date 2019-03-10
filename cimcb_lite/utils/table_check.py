@@ -32,7 +32,7 @@ def table_check(DataTable, PeakTable, print_statement=True):
         raise ValueError("Peak Table Idx numbers are not unique. Please change")
     
     if 'Name' not in peak_columns:
-        raise ValueError("Data Table does not contain the required 'Name' column")
+        raise ValueError("Peak Table does not contain the required 'Name' column")
     if PeakTable.Idx.isnull().values.any() == True:
         raise ValueError("Peak Table Name column cannot contain missing values")
     if len(np.unique(PeakTable.Idx)) != len(PeakTable.Idx):
