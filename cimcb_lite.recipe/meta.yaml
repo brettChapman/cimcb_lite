@@ -1,6 +1,6 @@
 package:
   name: cimcb_lite
-  version: 0.0.14
+  version: 0.0.15
 
 source:
   path: ../
@@ -12,7 +12,7 @@ build:
 
 requirements:
   build:
-    - numpy
+    - numpy >= 1.12.1
     - pandas >=0.24.1
     - bokeh >=0.13.0
     - scipy
@@ -24,8 +24,8 @@ requirements:
     - xlrd
 
   run:
-    - numpy
-    - pandas
+    - numpy >= 1.12.1
+    - pandas >=0.24.1
     - bokeh >=0.13.0
     - scipy
     - scikit-learn
