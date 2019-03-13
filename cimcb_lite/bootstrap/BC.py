@@ -1,4 +1,5 @@
 import numpy as np
+import scipy
 from scipy.stats import norm
 from .BaseBootstrap import BaseBootstrap
 from ..utils import nested_getattr
@@ -6,35 +7,37 @@ from ..utils import nested_getattr
 
 class BC(BaseBootstrap):
     """ Returns bootstrap confidence intervals using the bias-corrected boostrap interval.
-    
+
     Parameters
     ----------
     model : object
         This object is assumed to store bootlist attributes in .model (e.g. modelPLS.model.x_scores_).
-    
+
     X : array-like, shape = [n_samples, n_features]
         Predictor variables, where n_samples is the number of samples and n_features is the number of predictors.
-    
+
     Y : array-like, shape = [n_samples, 1]
         Response variables, where n_samples is the number of samples.
-        
+
     bootlist : array-like, shape = [n_bootlist, 1]
         List of attributes to calculate and return bootstrap confidence intervals.
-    
+
     bootnum : a positive integer, (default 100)
-        The number of bootstrap samples used in the computation. 
- 
- 
+        The number of bootstrap samples used in the computation.
+
+    seed: integer or None (default None)
+        Used to seed the generator for the resample with replacement.
+
     Returns
     -------
     bootci : dict of arrays
         Keys correspond to attributes in bootlist.
-        Each array contains 95% confidence intervals. 
-  
+        Each array contains 95% confidence intervals.
+        To return bootci, initalise then use method run().
     """
 
-    def __init__(self, model, X, Y, bootlist, bootnum=100):
-        super().__init__(model=model, X=X, Y=Y, bootlist=bootlist, bootnum=bootnum)
+    def __init__(self, model, X, Y, bootlist, bootnum=100, seed=None):
+        super().__init__(model=model, X=X, Y=Y, bootlist=bootlist, bootnum=bootnum, seed=seed)
         self.stat = {}
 
     def calc_stat(self):
@@ -71,10 +74,11 @@ class BC(BaseBootstrap):
             meansum = np.zeros((1, len(obs))).flatten()
             for i in range(len(obs)):
                 for j in range(len(bootstat)):
-                    if bootstat[j][i] > obs[i]:
+                    if bootstat[j][i] >= obs[i]:
                         meansum[i] = meansum[i] + 1
             prop = meansum / nboot  # Proportion of times boot mean > obs mean
-            z0 = norm.ppf(prop, loc=0, scale=1)
+            z0 = norm.ppf(prop)
+
             # new alpha
             pct1 = 100 * norm.cdf((2 * z0 + zalpha))
             pct2 = 100 * norm.cdf((2 * z0 - zalpha))
@@ -91,11 +95,10 @@ class BC(BaseBootstrap):
             ncomp = stat.shape[1]
             boot_ci = []
             for k in range(ncomp):
-                var = []
+                bootstat_k = []
                 for j in range(len(bootstat)):
-                    var.append(bootstat[j][:, k])
-                var_boot = BC.bootci_method(var, stat[:, k])
-                boot_ci.append(var_boot)
+                    bootstat_k.append(bootstat[j][:, k])
+                boot_ci_k = BC.bootci_method(bootstat_k, stat[:, k])
+                boot_ci.append(boot_ci_k)
             boot_ci = np.array(boot_ci)
-
         return boot_ci

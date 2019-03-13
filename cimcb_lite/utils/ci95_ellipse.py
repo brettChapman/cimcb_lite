@@ -3,29 +3,29 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 
-def ci95_ellipse(data, type='pop'):
+def ci95_ellipse(data, type="pop"):
     """ Construct a 95% confidence ellipse using PCA.
-    
+
     Parameters
     ----------
     data : array-like, shape = [n_samples, 2]
         data[:,0] must represent x coordinates
         data[:,1] must represent y coordinates
-    
+
     type : string, optional (default='pop')
         It must be 'pop' or 'mean'
-    
+
     Returns
     -------
     ellipse: array-like, shape = [100, 2]
         ellipse[:,0] represents x coordinates of ellipse
         ellipse[:,1] represents y coordinates of ellipse
-    
+
     outside: array-like, shape = [n_samples, 1]
         returns an 1d array (of 0/1) with length n_samples
         0 : ith sample is outside of ellipse
         1 : ith sample is inside of ellipse
-        
+
     """
 
     # Build and fit PCA model
@@ -75,7 +75,7 @@ def ci95_ellipse(data, type='pop'):
     x = r_ellipse[:, 0] + x0
     y = r_ellipse[:, 1] + y0
     ellipse = np.stack((x, y), axis=1)
-    
+
     outside = []
     for i in range(len(score)):
         metric = (score[i, 0] / a) ** 2 + (score[i, 1] / b) ** 2
@@ -83,5 +83,5 @@ def ci95_ellipse(data, type='pop'):
             outside.append(1)
         else:
             outside.append(0)
-            
+
     return ellipse, outside

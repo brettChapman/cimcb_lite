@@ -9,18 +9,20 @@ class BaseBootstrap(ABC):
     """Base class for bootstrap: BC, BCA, and Perc."""
 
     @abstractmethod
-    def __init__(self, model, X, Y, bootlist, bootnum=100):
-        self.model = deepcopy(model)
+    def __init__(self, model, X, Y, bootlist, bootnum=100, seed=None):
+        self.model = deepcopy(model)  # Make a copy of the model
         self.X = X
         self.Y = Y
         self.bootlist = bootlist
         self.bootnum = bootnum
+        self.seed = seed
         self.bootidx = []
         self.bootstat = {}
         self.bootci = {}
-    
+
     def calc_bootidx(self):
         """Generate indices for every resampled (with replacement) dataset."""
+        np.random.seed(self.seed)
         self.bootidx = []
         for i in range(self.bootnum):
             bootidx_i = np.random.choice(len(self.Y), len(self.Y))
@@ -37,7 +39,7 @@ class BaseBootstrap(ABC):
             X_res = self.X[i, :]
             Y_res = self.Y[i]
             self.model.train(X_res, Y_res)
-            self.model.test(X_res, Y_res)
+            self.model.test(X_res)
             for j in self.bootlist:
                 self.bootstat[j].append(nested_getattr(self.model, j))
 

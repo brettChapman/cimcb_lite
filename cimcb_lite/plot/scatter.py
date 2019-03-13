@@ -3,8 +3,17 @@ from bokeh.plotting import ColumnDataSource, figure
 from bokeh.models import Slope, Span, HoverTool
 
 
-def scatter(x, y, label=None, group=None, title="Scatter Plot", xlabel="x", ylabel="y", width=600, height=600, legend=True, size=4, shape="circle", font_size="16pt", label_font_size="13pt", col_palette=None, hover_xy=True, gradient=False, hline=False, xrange=None, yrange=None):
-    """Creates a scatterplot using Bokeh."""
+def scatter(x, y, label=None, group=None, title="Scatter Plot", xlabel="x", ylabel="y", width=600, height=600, legend=True, size=4, shape="circle", font_size="16pt", label_font_size="13pt", col_palette=None, hover_xy=True, gradient=False, hline=False, vline=False, xrange=None, yrange=None):
+    """Creates a scatterplot using Bokeh.
+
+    Required Parameters
+    -------------------
+    x : array-like, shape = [n_samples]
+        Inpute data for x-axis.
+
+    y : array-like, shape = [n_samples]
+        Inpute data for y-axis.
+    """
 
     # Error check
     if len(x) != len(y):
@@ -17,7 +26,7 @@ def scatter(x, y, label=None, group=None, title="Scatter Plot", xlabel="x", ylab
     else:
         try:
             label2 = label.copy()
-            label2_dict = label2.to_dict('series')
+            label2_dict = label2.to_dict("series")
             label_copy = label2_dict  # Ensure I don't overwrite label (when plot_groupmean=True)
         except TypeError:
             label2 = label.copy()
@@ -39,10 +48,10 @@ def scatter(x, y, label=None, group=None, title="Scatter Plot", xlabel="x", ylab
         group_copy = group.copy()
         group_unique = np.sort(np.unique(group_copy))
         col = []
-        for i in range(len(group)):
-            if group[i] == group_unique[0]:
+        for i in range(len(group_copy)):
+            if group_copy[i] == group_unique[0]:
                 col.append(col_palette[0])
-            elif group[i] == group_unique[1]:
+            elif group_copy[i] == group_unique[1]:
                 col.append(col_palette[1])
             else:
                 col.append(col_palette[2])
@@ -72,22 +81,24 @@ def scatter(x, y, label=None, group=None, title="Scatter Plot", xlabel="x", ylab
         shape = fig.triangle("x", "y", size=size, alpha=0.6, color="col", legend="group", source=source)
     else:
         raise ValueError("shape has to be either 'circle' or 'triangle'.")
-    
+
     shape_hover = HoverTool(renderers=[shape], tooltips=TOOLTIPS)
     fig.add_tools(shape_hover)
-    
-    
+
     if gradient is not False:
-        slope = Slope(gradient=gradient, y_intercept=0, line_color="black", line_width=2, line_alpha=0.3,)
+        slope = Slope(gradient=gradient, y_intercept=0, line_color="black", line_width=2, line_alpha=0.3)
         fig.add_layout(slope)
         new_gradient = -(1 / gradient)
         slope2 = Slope(gradient=new_gradient, y_intercept=0, line_color="black", line_dash="dashed", line_width=2, line_alpha=0.10)
         fig.add_layout(slope2)
-    
+
     if hline is not False:
-        # Add hline
-        hline = Span(location=hline, dimension="width", line_color="black", line_width=2, line_alpha=0.3)
-        fig.add_layout(hline)
+        h = Span(location=0, dimension="width", line_color="black", line_width=2, line_alpha=0.3)
+        fig.add_layout(h)
+
+    if vline is not False:
+        v = Span(location=0, dimension="height", line_color="black", line_width=2, line_alpha=0.3)
+        fig.add_layout(v)
 
     # Font-sizes
     fig.title.text_font_size = font_size

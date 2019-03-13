@@ -6,27 +6,36 @@ from bokeh.models import HoverTool
 
 
 def boxplot(X, group, violin=False, title="", xlabel="Group", ylabel="Value", font_size="20pt", label_font_size="13pt", width=500, height=400, color="whitesmoke", color_violin="mediumturquoise", width_boxplot=1, width_violin=1, y_range=None, group_name=None, group_name_sort=None):
-    """Creates a boxplot using Bokeh."""
-    
+    """Creates a boxplot using Bokeh.
+
+    Required Parameters
+    -------------------
+    X : array-like, shape = [n_samples]
+        Inpute data
+
+    group : array-like, shape = [n_samples]
+        Group label for sample
+    """
+
     if group_name_sort is None:
         group_name_sort = [str(i) for i in list(set(group))]
-        
+
     # unique groups as strings
     if group_name is None:
         group_name = [str(i) for i in list(set(group))]
 
-    # Colors 
+    # Colors
     if isinstance(color, str):
         color = [color] * len(group_name)
     if isinstance(color_violin, str):
         color_violin = [color_violin] * len(group_name)
- 
+
     # Combine X and group into pandas table
     X_pd = pd.Series(X, name="X")
     group_pd = pd.Series(group, name="group")
     table = pd.concat([X_pd, group_pd], axis=1)
 
-    # Find the quartiles and IQR for each group 
+    # Find the quartiles and IQR for each group
     X_groupby = table.groupby("group", sort=True)
     q1 = X_groupby.quantile(q=0.25)
     q2 = X_groupby.quantile(q=0.50)
@@ -39,6 +48,7 @@ def boxplot(X, group, violin=False, title="", xlabel="Group", ylabel="Value", fo
     def outliers(group):
         group_name = group.name
         return group[(group.X > upper.loc[group_name]["X"]) | (group.X < lower.loc[group_name]["X"])]["X"]
+
     out = X_groupby.apply(outliers).dropna()
 
     # prepare outlier data for plotting, we need coordinates for every outlier.
@@ -65,7 +75,7 @@ def boxplot(X, group, violin=False, title="", xlabel="Group", ylabel="Value", fo
 
     # Bokeh data source outlier
     source_outliers = ColumnDataSource(data=dict(outx=outx, outy=outy, outidx=outidx))
-    
+
     # Set default y_range if None
     if y_range is None:
         max_val = max(abs(np.min(X)), abs(np.max(X)))
@@ -110,18 +120,9 @@ def boxplot(X, group, violin=False, title="", xlabel="Group", ylabel="Value", fo
 
     # Outliers
     outliers = fig.circle("outx", "outy", size=4, color="red", fill_alpha=0.4, source=source_outliers)
-    
+
     # Hovertool for boxplot
-    fig.add_tools(
-        HoverTool(
-            renderers=[stem1, stem2, box1, box2],
-            tooltips=[
-                ("Upper", "@upper{1.11}"),
-                ("Q3", "@q3{1.11}"),
-                ("Median", "@q2{1.11}"),
-                ("Q1", "@q1{1.11}"),
-                ("Lower", "@lower{1.11}"),
-            ],))
+    fig.add_tools(HoverTool(renderers=[stem1, stem2, box1, box2], tooltips=[("Upper", "@upper{1.11}"), ("Q3", "@q3{1.11}"), ("Median", "@q2{1.11}"), ("Q1", "@q1{1.11}"), ("Lower", "@lower{1.11}")]))
 
     # Hovertool for outliers
     fig.add_tools(HoverTool(renderers=[outliers], tooltips=[("Index", "@outidx"), (ylabel, "@outy")]))
@@ -136,5 +137,5 @@ def boxplot(X, group, violin=False, title="", xlabel="Group", ylabel="Value", fo
     fig.min_border_right = 20
     fig.min_border_top = 20
     fig.min_border_bottom = 20
-    
+
     return fig

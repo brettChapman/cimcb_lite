@@ -5,12 +5,33 @@ from .table_check import table_check
 
 
 def load_dataXL(filename, DataSheet, PeakSheet):
-    """Loads and validates the DataFile and PeakFile."""
+    """Loads and validates the DataFile and PeakFile from an excel file.
+
+
+    Parameters
+    ----------
+    file : string
+        The name of the excel file (.xlsx file) e.g. 'projectxxx1.xlsx'.  Note, it can include the directory e.g. '/homedir/projectxxx1.xlsx'
+
+    DataSheet : string
+        The name of the data sheet in the file e.g. 'Data'. Note, the data sheet must contain an 'Idx', 'SampleID', and 'Class' column.
+
+    PeakSheet : string
+        The name of the peak sheet in the file e.g. 'Pata'. Note, the peak sheet must contain an 'Idx', 'Name', and 'Label' column.
+
+    Returns
+    -------
+    DataTable: DataFrame
+        Data sheet from the excel file.
+
+    PeakTable: DataFrame
+        Peak sheet from the excel file.
+    """
 
     if path.isfile(filename) is False:
         raise ValueError("{} does not exist.".format(filename))
 
-    if not filename.endswith('.xlsx'):
+    if not filename.endswith(".xlsx"):
         raise ValueError("{} should be a .xlsx file.".format(filename))
 
     # LOAD PEAK DATA
@@ -23,13 +44,16 @@ def load_dataXL(filename, DataSheet, PeakSheet):
 
     # Replace with nans
     DataTable = DataTable.replace(-99, np.nan)
-    DataTable = DataTable.replace('.', np.nan)
-    DataTable = DataTable.replace(' ', np.nan)
-    
+    DataTable = DataTable.replace(".", np.nan)
+    DataTable = DataTable.replace(" ", np.nan)
+
     # Error checks
     table_check(DataTable, PeakTable, print_statement=True)
 
+    # Make the Idx column, the default index
+    DataTable.index = DataTable.Idx
+    PeakTable.index = PeakTable.Idx
+
     print("TOTAL SAMPLES: {} TOTAL PEAKS: {}".format(len(DataTable), len(PeakTable)))
     print("Done!")
-
     return DataTable, PeakTable

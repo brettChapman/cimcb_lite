@@ -4,16 +4,25 @@ from bokeh.plotting import figure
 
 
 def distribution(X, group, kde=True, title="Density Plot", xlabel="x", ylabel="Pr(x)", font_size="20pt", label_font_size="13pt", width=500, height=400, color_hist="green", color_kde="mediumturquoise"):
-    """Creates a distribution plot using Bokeh."""
-    
-    # Split into groups 
-    group_unique = np.sort(np.unique(group)) 
-    x1 = X[group == group_unique[0]] 
+    """Creates a distribution plot using Bokeh.
+
+    Required Parameters
+    -------------------
+    X : array-like, shape = [n_samples]
+        Inpute data
+
+    group : array-like, shape = [n_samples]
+        Group label for sample
+    """
+
+    # Split into groups
+    group_unique = np.sort(np.unique(group))
+    x1 = X[group == group_unique[0]]
     x2 = X[group == group_unique[1]]
     if len(group_unique) == 4:
-        x3 = X[group == group_unique[2]] 
+        x3 = X[group == group_unique[2]]
         x4 = X[group == group_unique[3]]
-        
+
     # Density curve
     x1_min, x1_max = x1.min(), x1.max()
     x1_padding = (x1_max - x1_min) * 0.5
@@ -36,7 +45,7 @@ def distribution(X, group, kde=True, title="Density Plot", xlabel="x", ylabel="P
     x2_pdf_grid = np.insert(x2_pdf_grid, 0, 0)
     x2_pdf_grid = np.insert(x2_pdf_grid, 0, 0)
 
-    # Density curve x3 and x4 
+    # Density curve x3 and x4
     if len(group_unique) == 4:
         # Density curve
         x3_min, x3_max = x3.min(), x3.max()
@@ -60,7 +69,6 @@ def distribution(X, group, kde=True, title="Density Plot", xlabel="x", ylabel="P
         x4_pdf_grid = np.insert(x4_pdf_grid, 0, 0)
         x4_pdf_grid = np.insert(x4_pdf_grid, 0, 0)
 
-    
     max_val_a = max(abs(max(x1_grid)), abs(min(x1_grid)))
     max_val_b = max(abs(max(x2_grid)), abs(min(x2_grid)))
     max_val_final = 0.2 * max(max_val_a, max_val_b)
@@ -77,7 +85,7 @@ def distribution(X, group, kde=True, title="Density Plot", xlabel="x", ylabel="P
         x_range_min = min(min(x1_grid) - max_val_final, min(x2_grid) - max_val_final, min(x3_grid) - max_val_final, min(x4_grid) - max_val_final)
         x_range_max = max(max(x1_grid) + max_val_final, max(x2_grid) + max_val_final, max(x3_grid) + max_val_final, min(x4_grid) + max_val_final)
         new_x_range = (x_range_min, x_range_max)
-        new_y_range = (0, max(max(x1_pdf_grid) * 1.1, max(x2_pdf_grid) * 1.1,  max(x3_pdf_grid) * 1.1,  max(x4_pdf_grid) * 1.1))
+        new_y_range = (0, max(max(x1_pdf_grid) * 1.1, max(x2_pdf_grid) * 1.1, max(x3_pdf_grid) * 1.1, max(x4_pdf_grid) * 1.1))
 
     # Figure
     fig = figure(title=title, x_axis_label=xlabel, y_axis_label=ylabel, plot_width=width, plot_height=height, x_range=new_x_range, y_range=new_y_range)
@@ -89,7 +97,7 @@ def distribution(X, group, kde=True, title="Density Plot", xlabel="x", ylabel="P
             fig.patch(x4_grid, x4_pdf_grid, alpha=0.2, color="blue", line_color="grey", line_width=1)
         else:
             fig.patch(x1_grid, x1_pdf_grid, alpha=0.3, color="red", line_color="grey", line_width=1)
-            fig.patch(x2_grid, x2_pdf_grid, alpha=0.3, color="blue", line_color="grey", line_width=1)            
+            fig.patch(x2_grid, x2_pdf_grid, alpha=0.3, color="blue", line_color="grey", line_width=1)
 
     # Y-axis should always start at 0
     fig.y_range.start = 0

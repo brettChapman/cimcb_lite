@@ -7,35 +7,37 @@ from ..utils import nested_getattr
 
 class BCA(BaseBootstrap):
     """ Returns bootstrap confidence intervals using the bias-corrected and accelerated boostrap interval.
-    
+
     Parameters
     ----------
     model : object
         This object is assumed to store bootlist attributes in .model (e.g. modelPLS.model.x_scores_).
-    
+
     X : array-like, shape = [n_samples, n_features]
         Predictor variables, where n_samples is the number of samples and n_features is the number of predictors.
-    
+
     Y : array-like, shape = [n_samples, 1]
         Response variables, where n_samples is the number of samples.
-        
+
     bootlist : array-like, shape = [n_bootlist, 1]
         List of attributes to calculate and return bootstrap confidence intervals.
-    
+
     bootnum : a positive integer, (default 100)
-        The number of bootstrap samples used in the computation. 
- 
- 
+        The number of bootstrap samples used in the computation.
+
+    seed: integer or None (default None)
+        Used to seed the generator for the resample with replacement.
+
     Returns
     -------
     bootci : dict of arrays
         Keys correspond to attributes in bootlist.
-        Each array contains 95% confidence intervals. 
-  
+        Each array contains 95% confidence intervals.
+
     """
 
-    def __init__(self, model, X, Y, bootlist, bootnum=100):
-        super().__init__(model=model, X=X, Y=Y, bootlist=bootlist, bootnum=bootnum)
+    def __init__(self, model, X, Y, bootlist, bootnum=100, seed=None):
+        super().__init__(model=model, X=X, Y=Y, bootlist=bootlist, bootnum=bootnum, seed=seed)
         self.stat = {}
         self.jackidx = []
         self.jackstat = {}
@@ -96,38 +98,27 @@ class BCA(BaseBootstrap):
             meansum = np.zeros((1, len(obs))).flatten()
             for i in range(len(obs)):
                 for j in range(len(bootstat)):
-                    if bootstat[j][i] > obs[i]:
+                    if bootstat[j][i] >= obs[i]:
                         meansum[i] = meansum[i] + 1
-
             prop = meansum / nboot  # Proportion of times boot mean > obs mean
-
             z0 = norm.ppf(prop, loc=0, scale=1)
+
             # new alpha
             jmean = np.mean(jackstat, axis=0)
             num = np.sum((jmean - jackstat) ** 3, axis=0)
             den = np.sum((jmean - jackstat) ** 2, axis=0)
             ahat = num / (6 * den ** (3 / 2))
 
-            # print(ahat)
-
             zL = z0 + norm.ppf(0.05 / 2, loc=0, scale=1)
             pct1 = 100 * norm.cdf((z0 + zL / (1 - ahat * zL)))
             zU = z0 + norm.ppf((1 - 0.05 / 2), loc=0, scale=1)
             pct2 = 100 * norm.cdf((z0 + zU / (1 - ahat * zU)))
+
             boot_ci = []
-
-            # Uses BC if BCA doesn't work.. when jackknife is too low
-            pct1_bc = 100 * norm.cdf((2 * z0 + zalpha))
-            pct2_bc = 100 * norm.cdf((2 * z0 - zalpha))
-
             for i in range(len(pct1)):
                 bootstat_i = [item[i] for item in bootstat]
-                try:
-                    append_low = np.percentile(bootstat_i, pct1[i])
-                    append_upp = np.percentile(bootstat_i, pct2[i])
-                except ValueError:
-                    append_low = np.percentile(bootstat_i, pct1_bc[i])
-                    append_upp = np.percentile(bootstat_i, pct2_bc[i])
+                append_low = np.percentile(bootstat_i, pct1[i])
+                append_upp = np.percentile(bootstat_i, pct2[i])
                 boot_ci.append([append_low, append_upp])
             boot_ci = np.array(boot_ci)
 
