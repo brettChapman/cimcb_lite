@@ -153,6 +153,6 @@ def univariate_2class(DataTable, PeakTable, group, posclass, parametric=True, se
     StatsTable["LeveneW"] = [i[0] for i in l]
     StatsTable["LevenePvalue"] = [i[1] for i in l]
 
-    # Make the Idx column, the default index
-    StatsTable.index = StatsTable.Idx
+    # Make the Idx column start from 1
+    StatsTable.index = np.arange(1, len(StatsTable) + 1)
     return StatsTable
