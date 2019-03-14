@@ -51,8 +51,8 @@ def load_dataXL(filename, DataSheet, PeakSheet):
     table_check(DataTable, PeakTable, print_statement=True)
 
     # Make the Idx column, the default index
-    DataTable.index = DataTable.Idx
-    PeakTable.index = PeakTable.Idx
+    DataTable.index = np.arange(1, len(DataTable) + 1)
+    PeakTable.index = np.arange(1, len(PeakTable) + 1)
 
     print("TOTAL SAMPLES: {} TOTAL PEAKS: {}".format(len(DataTable), len(PeakTable)))
     print("Done!")
