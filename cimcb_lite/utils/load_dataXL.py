@@ -50,7 +50,7 @@ def load_dataXL(filename, DataSheet, PeakSheet):
     # Error checks
     table_check(DataTable, PeakTable, print_statement=True)
 
-    # Make the Idx column, the default index
+    # Make the Idx column start from 1
     DataTable.index = np.arange(1, len(DataTable) + 1)
     PeakTable.index = np.arange(1, len(PeakTable) + 1)
 
