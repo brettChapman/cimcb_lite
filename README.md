@@ -38,10 +38,11 @@ Open with Binders:
 
 ### API
 For futher detail on the usage refer to the docstring.
-#### cb.model
+
+#### cimcb_lite.model
 - [PLS_SIMPLS](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/PLS_SIMPLS.py)
 
-#### cb.plot
+#### cimcb_lite.plot
 - [boxplot](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/boxplot.py)
 - [distribution](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/distribution.py)
 - [pca](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/pca.py)
@@ -50,15 +51,15 @@ For futher detail on the usage refer to the docstring.
 - [scatter](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/scattern.py)
 - [scatterCI](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/scatterCI.py)
 
-#### cb.cross_val
+#### cimcb_lite.cross_val
 - [kfold](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/cross_val/kfold.py)
 
-#### cb.bootstrap
+#### cimcb_lite.bootstrap
 - [Perc](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/Perc.py)
 - [BC](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/BC.py)
 - [BCA](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/BCA.py)
 
-#### cb.utils
+#### cimcb_lite.utils
 - [binary_metrics](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/binary_metrics.py)
 - [ci95_ellipse](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/ci95_ellipse.py)
 - [binary_metrics](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/binary_metrics.py)
