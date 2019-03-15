@@ -1,3 +1,5 @@
+from .__version__ import version as __version__
+
 from . import bootstrap
 from . import cross_val
 from . import model
