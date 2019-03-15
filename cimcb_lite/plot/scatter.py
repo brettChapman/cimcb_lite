@@ -93,11 +93,11 @@ def scatter(x, y, label=None, group=None, title="Scatter Plot", xlabel="x", ylab
         fig.add_layout(slope2)
 
     if hline is not False:
-        h = Span(location=0, dimension="width", line_color="black", line_width=2, line_alpha=0.3)
+        h = Span(location=0, dimension="width", line_color="black", line_width=3, line_alpha=0.15)
         fig.add_layout(h)
 
     if vline is not False:
-        v = Span(location=0, dimension="height", line_color="black", line_width=2, line_alpha=0.3)
+        v = Span(location=0, dimension="height", line_color="black", line_width=3, line_alpha=0.15)
         fig.add_layout(v)
 
     # Font-sizes
