@@ -6,8 +6,8 @@ cimcb_lite is a lite version of the cimcb package containing the necessary tools
 
 ### Dependencies
 cimcb_lite requires:
-- Python(>=3.5)
-- Bokeh(>=1.0.0)
+- Python (>=3.5)
+- Bokeh (>=1.0.0)
 - NumPy
 - SciPy
 - scikit-learn
