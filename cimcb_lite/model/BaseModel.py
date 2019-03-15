@@ -89,10 +89,11 @@ class BaseModel(ABC):
             roc_bokeh.line(fpr_test, tpr_test, color="red", line_width=3.5, alpha=0.6, legend="ROC Curve (Test)")  # Add ROC Curve(Test) to roc_bokeh
 
         # Violin plot
+        violin_title = "Cut-off: {}".format(np.round(stats["val_cutoffscore"], 2))
         if testset is None:
-            violin_bokeh = boxplot(Yscore_train, Ytrue_train, title="", xlabel="Class", ylabel="Predicted Score", violin=True, color=["#FFCCCC", "#CCE5FF"], width=320, height=315)
+            violin_bokeh = boxplot(Yscore_train, Ytrue_train, xlabel="Class", ylabel="Predicted Score", violin=True, color=["#FFCCCC", "#CCE5FF"], width=320, height=315, title=violin_title, font_size="11pt")
         else:
-            violin_bokeh = boxplot(Yscore_combined, Ytrue_combined_name, title="", xlabel="Class", ylabel="Predicted Score", violin=True, color=["#fcaeae", "#aed3f9", "#FFCCCC", "#CCE5FF"], width=320, height=315, group_name=["Train (0)", "Test (0)", "Train (1)", "Test (1)"], group_name_sort=["Test (0)", "Test (1)", "Train (0)", "Train (1)"])
+            violin_bokeh = boxplot(Yscore_combined, Ytrue_combined_name, xlabel="Class", ylabel="Predicted Score", violin=True, color=["#fcaeae", "#aed3f9", "#FFCCCC", "#CCE5FF"], width=320, height=315, group_name=["Train (0)", "Test (0)", "Train (1)", "Test (1)"], group_name_sort=["Test (0)", "Test (1)", "Train (0)", "Train (1)"], title=violin_title, font_size="11pt")
         violin_bokeh.multi_line([[-100, 100]], [[stats["val_cutoffscore"], stats["val_cutoffscore"]]], line_color="black", line_width=2, line_alpha=1.0, line_dash="dashed")
 
         # Distribution plot
@@ -162,11 +163,11 @@ class BaseModel(ABC):
 
         # Title
         if specificity is not False:
-            title = "Specificity set to: {}".format(np.round(val, 2))
+            title = "Specificity fixed to: {}".format(np.round(val, 2))
         elif cutoffscore is not False:
-            title = "Score cut-off set to: {}".format(np.round(val, 2))
+            title = "Score cut-off fixed to: {}".format(np.round(val, 2))
         else:
-            title = "Specificity set to: {}".format(np.round(val, 2))
+            title = "Specificity fixed to: {}".format(np.round(val, 2))
         title_bokeh = "<h3>{}</h3>".format(title)
 
         # Combine table, violin plot and roc plot into one figure
