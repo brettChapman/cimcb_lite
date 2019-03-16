@@ -77,8 +77,8 @@ class BC(BaseBootstrap):
                     if bootstat[j][i] >= obs[i]:
                         meansum[i] = meansum[i] + 1
             prop = meansum / nboot  # Proportion of times boot mean > obs mean
-            z0 = norm.ppf(prop)
-
+            z0 = -norm.ppf(prop)
+            
             # new alpha
             pct1 = 100 * norm.cdf((2 * z0 + zalpha))
             pct2 = 100 * norm.cdf((2 * z0 - zalpha))

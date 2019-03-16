@@ -101,13 +101,13 @@ class BCA(BaseBootstrap):
                     if bootstat[j][i] >= obs[i]:
                         meansum[i] = meansum[i] + 1
             prop = meansum / nboot  # Proportion of times boot mean > obs mean
-            z0 = norm.ppf(prop, loc=0, scale=1)
-
+            z0 = -norm.ppf(prop, loc=0, scale=1)
+            
             # new alpha
             jmean = np.mean(jackstat, axis=0)
             num = np.sum((jmean - jackstat) ** 3, axis=0)
             den = np.sum((jmean - jackstat) ** 2, axis=0)
-            ahat = num / (6 * den ** (3 / 2))
+            ahat = num / (6 * den ** (3 / 2)) 
 
             zL = z0 + norm.ppf(0.05 / 2, loc=0, scale=1)
             pct1 = 100 * norm.cdf((z0 + zL / (1 - ahat * zL)))
