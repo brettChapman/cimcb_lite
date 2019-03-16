@@ -108,7 +108,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     # Figure 1
     data = {"corr": stats_corr, "r2": stats_r2, "q2": stats_q2}
     source = ColumnDataSource(data=data)
-    fig1 = figure(plot_width=470, plot_height=410, x_range=(-0.15, 1.15), x_axis_label="Correlation", y_axis_label="R2/Q2")
+    fig1 = figure(plot_width=470, plot_height=410, x_range=(-0.15, 1.15), x_axis_label="Correlation", y_axis_label="R²/Q²")
     # Lines
     r2slope = Slope(gradient=r2gradient, y_intercept=r2yintercept, line_color="black", line_width=2, line_alpha=0.3)
     q2slope = Slope(gradient=q2gradient, y_intercept=q2yintercept, line_color="black", line_width=2, line_alpha=0.3)
@@ -116,12 +116,12 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     fig1.add_layout(q2slope)
 
     # Points
-    r2_square = fig1.square("corr", "r2", size=6, alpha=0.5, color="red", legend="R2", source=source)
-    q2_square = fig1.square("corr", "q2", size=6, alpha=0.5, color="blue", legend="Q2", source=source)
+    r2_square = fig1.square("corr", "r2", size=6, alpha=0.5, color="red", legend="R²", source=source)
+    q2_square = fig1.square("corr", "q2", size=6, alpha=0.5, color="blue", legend="Q²", source=source)
 
     # Add Hovertool
-    fig1.add_tools(HoverTool(renderers=[r2_square], tooltips=[("R2 Value", "@r2")]))
-    fig1.add_tools(HoverTool(renderers=[q2_square], tooltips=[("Q2 Value", "@q2")]))
+    fig1.add_tools(HoverTool(renderers=[r2_square], tooltips=[("R² Value", "@r2")]))
+    fig1.add_tools(HoverTool(renderers=[q2_square], tooltips=[("Q² Value", "@q2")]))
 
     # Extra padding
     fig1.min_border_left = 20
@@ -149,7 +149,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     x2_pdf_grid = [-x for x in x2_pdf_grid]
 
     # Figure 2
-    fig2 = figure(plot_width=470, plot_height=410, x_range=(min(x2_grid) * 1.1, max(stats_r2[0], max(x1_grid)) + 0.65), y_range=((min(x2_pdf_grid) - 1) * 1.2, (max(x1_pdf_grid) + 1) * 1.1), x_axis_label="R2/Q2", y_axis_label="p.d.f.")
+    fig2 = figure(plot_width=470, plot_height=410, x_range=(min(x2_grid) * 1.1, max(stats_r2[0], max(x1_grid)) + 0.65), y_range=((min(x2_pdf_grid) - 1) * 1.2, (max(x1_pdf_grid) + 1) * 1.1), x_axis_label="R²/Q²", y_axis_label="p.d.f.")
     slope_0 = Span(location=0, dimension="width", line_color="black", line_width=2, line_alpha=0.3)
     fig2.add_layout(slope_0)
 
@@ -178,7 +178,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     data2_line = {"x": [stats_r2[0], stats_r2[0]], "y": [max(x1_pdf_grid) + 1, 0], "hover": [str(data2_manu), str(data2_manu)]}
     source2_line = ColumnDataSource(data=data2_line)
     r2fig2_line = fig2.line("x", "y", line_width=2, line_color="red", source=source2_line)
-    r2fig2 = fig2.circle("x", "y", fill_color="red", size=6, legend="R2", source=source2)
+    r2fig2 = fig2.circle("x", "y", fill_color="red", size=6, legend="R²", source=source2)
 
     # Lollipops Q2
     # Do a t-test
@@ -197,11 +197,11 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     data3_line = {"x": [stats_q2[0], stats_q2[0]], "y": [(min(x2_pdf_grid) - 1), 0], "hover": [data3_manu, data3_manu]}
     source3_line = ColumnDataSource(data=data3_line)
     q2fig2_line = fig2.line("x", "y", line_width=2, line_color="blue", source=source3_line)
-    q2fig2 = fig2.circle("x", "y", fill_color="blue", size=6, legend="Q2", source=source3)
+    q2fig2 = fig2.circle("x", "y", fill_color="blue", size=6, legend="Q²", source=source3)
 
     # Add text
-    textr2 = "True R2\nP-Value: {}".format(data2_manu)
-    textq2 = "True Q2\nP-Value: {}".format(data3_manu)
+    textr2 = "True R²\nP-Value: {}".format(data2_manu)
+    textq2 = "True Q²\nP-Value: {}".format(data3_manu)
     fig2.text(x=[stats_r2[0] + 0.05, stats_q2[0] + 0.05], y=[(max(x1_pdf_grid) + 0.5), (min(x2_pdf_grid) - 1.5)], text=[textr2, textq2], angle=0, text_font_size="8pt")
 
     # Font-sizes
