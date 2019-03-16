@@ -4,7 +4,7 @@ from sklearn.model_selection import StratifiedKFold
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
-from bokeh.models import Circle, HoverTool, TapTool
+from bokeh.models import Circle, HoverTool, TapTool, LabelSet
 from tqdm import tqdm
 from bokeh.plotting import output_notebook, show
 from .BaseCrossVal import BaseCrossVal
@@ -179,21 +179,23 @@ class kfold(BaseCrossVal):
         fig1_xrange = (min(q2) - max(0.1 * (min(q2)), 0.03), max(q2) + max(0.1 * (max(q2)), 0.03))
 
         # Figure 1 (DIFFERENCE (R2 - Q2) vs. Q2)
-        fig1 = figure(x_axis_label="Q2", y_axis_label="DIFFERENCE (R2 - Q2)", title="DIFFERENCE (R2 - Q2) vs. Q2", tools="tap,pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select", y_range=fig1_yrange, x_range=fig1_xrange, plot_width=480, plot_height=400)
+        fig1 = figure(x_axis_label="Q²", y_axis_label="DIFFERENCE (R² - Q²)", title="DIFFERENCE (R² - Q²) vs Q²", tools="tap,pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select", y_range=fig1_yrange, x_range=fig1_xrange, plot_width=480, plot_height=400)
         fig1.title.text_font_size = "14pt"
 
         # Figure 1: Add a line
         fig1_line = fig1.line(q2, diff, line_width=2, line_color="black", line_alpha=0.25)
 
         # Figure 1: Add circles (interactive click)
-        fig1_circ = fig1.circle("q2", "diff", size=10, alpha=0.7, color="green", source=source)
+        fig1_circ = fig1.circle("q2", "diff", size=17, alpha=0.7, color="green", source=source)
         fig1_circ.selection_glyph = Circle(fill_color="green", line_width=2, line_color="black")
         fig1_circ.nonselection_glyph.fill_color = "green"
         fig1_circ.nonselection_glyph.fill_alpha = 0.4
         fig1_circ.nonselection_glyph.line_color = "white"
+        fig1_labels = LabelSet(x="q2", y="diff", text="values_string", level="glyph", source=source, render_mode="canvas", x_offset=-4, y_offset=-7, text_font_size="10pt", text_color="white")
+        fig1.add_layout(fig1_labels)
 
         # Figure 1: Add hovertool
-        fig1.add_tools(HoverTool(renderers=[fig1_circ], tooltips=[(key, "@values_string"), ("R2", "@r2_text"), ("Q2", "@q2_text"), ("Diff", "@diff_text")]))
+        fig1.add_tools(HoverTool(renderers=[fig1_circ], tooltips=[(key, "@values_string"), ("R²", "@r2_text"), ("Q²", "@q2_text"), ("Diff", "@diff_text")]))
 
         # Figure 1: Extra formating
         fig1.axis.major_label_text_font_size = "8pt"
@@ -201,7 +203,7 @@ class kfold(BaseCrossVal):
         fig1.yaxis.axis_label_text_font_size = "12pt"
 
         # Figure 2: R2/Q2
-        fig2 = figure(x_axis_label=key, y_axis_label="Value", title="R2/Q2 vs. {}".format(key), plot_width=480, plot_height=400, x_range=pd.unique(values_string), y_range=(0, 1.1), tools="pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select")
+        fig2 = figure(x_axis_label="components", y_axis_label="Value", title="R²/Q² vs no. of components", plot_width=480, plot_height=400, x_range=pd.unique(values_string), y_range=(0, 1.1), tools="pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select")
         fig2.title.text_font_size = "14pt"
 
         # Figure 2: add confidence intervals if bootnum > 1
@@ -234,7 +236,7 @@ class kfold(BaseCrossVal):
 
         # Figure 2: add r2
         fig2_line_r2 = fig2.line(values_string, r2, line_color="red", line_width=2)
-        fig2_circ_r2 = fig2.circle("values_string", "r2", line_color="red", fill_color="white", fill_alpha=1, size=8, source=source)
+        fig2_circ_r2 = fig2.circle("values_string", "r2", line_color="red", fill_color="white", fill_alpha=1, size=8, source=source, legend="R²")
         fig2_circ_r2.selection_glyph = Circle(line_color="red", fill_color="white", line_width=2)
         fig2_circ_r2.nonselection_glyph.line_color = "red"
         fig2_circ_r2.nonselection_glyph.fill_color = "white"
@@ -242,16 +244,22 @@ class kfold(BaseCrossVal):
 
         # Figure 2: add q2
         fig2_line_q2 = fig2.line(values_string, q2, line_color="blue", line_width=2)
-        fig2_circ_q2 = fig2.circle("values_string", "q2", line_color="blue", fill_color="white", fill_alpha=1, size=8, source=source)
+        fig2_circ_q2 = fig2.circle("values_string", "q2", line_color="blue", fill_color="white", fill_alpha=1, size=8, source=source, legend="Q²")
         fig2_circ_q2.selection_glyph = Circle(line_color="blue", fill_color="white", line_width=2)
         fig2_circ_q2.nonselection_glyph.line_color = "blue"
         fig2_circ_q2.nonselection_glyph.fill_color = "white"
         fig2_circ_q2.nonselection_glyph.line_alpha = 0.4
 
         # Add hovertool and taptool
-        fig2.add_tools(HoverTool(renderers=[fig2_circ_r2], tooltips=[("R2", "@r2")], mode="vline"))
-        fig2.add_tools(HoverTool(renderers=[fig2_circ_q2], tooltips=[("Q2", "@q2")], mode="vline"))
+        fig2.add_tools(HoverTool(renderers=[fig2_circ_r2], tooltips=[("R²", "@r2")], mode="vline"))
+        fig2.add_tools(HoverTool(renderers=[fig2_circ_q2], tooltips=[("Q²", "@q2")], mode="vline"))
         fig2.add_tools(TapTool(renderers=[fig2_circ_r2, fig2_circ_q2]))
+
+        # Figure 2: Extra formating
+        fig2.axis.major_label_text_font_size = "8pt"
+        fig2.xaxis.axis_label_text_font_size = "12pt"
+        fig2.yaxis.axis_label_text_font_size = "12pt"
+        fig2.legend.location = "top_left"
 
         # Create a grid and output figures
         grid = np.full((1, 2), None)
