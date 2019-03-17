@@ -8,10 +8,10 @@ def binary_metrics(y_true, y_pred, cut_off=0.5):
     Parameters
     ----------
     y_true : array-like, shape = [n_samples]
-        Binary label for samples (0s and 1s)
+        Binary label for samples (0s and 1s).
 
     y_pred : array-like, shape = [n_samples]
-        Predicted y score for samples
+        Predicted y score for samples.
 
     cut_off : number, (default 0.5)
         A value for y_pred greater-than or equal to the cut_off will be treated as 1, otherwise it will be treated as 0 for the confusion matrix.
@@ -53,6 +53,7 @@ def binary_metrics(y_true, y_pred, cut_off=0.5):
 
 
 def safe_div(a, b):
+    """Return np.nan if the demoninator is 0."""
     if b == 0:
-        return np.nan  # return np.nan if the demoninator is 0
+        return np.nan  
     return a / b
