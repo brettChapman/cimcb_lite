@@ -69,9 +69,10 @@ For futher detail on the usage refer to the docstring.
 - [scale](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/scale.py)
 - [table_check](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/table_check.py)
 - [univariate_2class](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/univariate_2class.py)
+- [wmean](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/wmean.py)
 
 ### License
-cimcb_lite is licensed under the ___ license. 
+cimcb_lite is licensed under the BSD license. 
 
 ### Authors
 - Kevin Mendez
