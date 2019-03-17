@@ -52,7 +52,7 @@ For futher detail on the usage refer to the docstring.
 - [scatterCI](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/scatterCI.py#L7-L14)
 
 #### cimcb_lite.cross_val
-- [kfold](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/cross_val/kfold.pyy#L14-L42)
+- [kfold](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/cross_val/kfold.py#L14-L42)
 
 #### cimcb_lite.bootstrap
 - [Perc](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/Perc.py#L6-L35)
