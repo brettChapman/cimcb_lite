@@ -28,9 +28,6 @@ Alternatively, to install directly from github:
 pip install https://github.com/KevinMMendez/cimcb_lite/archive/master.zip
 ```
 
-### Quick Start
-
-
 ### Tutorial
 Open with Binders:  
 
@@ -40,7 +37,13 @@ Open with Binders:
 For futher detail on the usage refer to the docstring.
 
 #### cimcb_lite.model
-- [PLS_SIMPLS](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/PLS_SIMPLS.py#L14-L36)
+- [PLS_SIMPLS](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/PLS_SIMPLS.py#L14-L36): Partial least-squares regression using the SIMPLS algorithm.
+  - [train](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/PLS_SIMPLS.py#L43-L58): Fit the PLS model, save additional stats (as attributes) and return Y predicted values.
+  - [test](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/PLS_SIMPLS.py#L105-L117): Calculate and return Y predicted value.
+  - [evaluate](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/BaseModel.py#L40-L56): Plots a figure containing a Violin plot, Distribution plot, ROC plot and Binary Metrics statistics.
+  - [calc_bootci](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/BaseModel.py#L191-L201): Calculates bootstrap confidence intervals based on bootlist.
+  - [plot_featureimportance](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/BaseModel.py#L211-L212): Plots feature importance metrics.
+  - [plot_permutation_test](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/BaseModel.py#L253-L254): Plots permutation test figures.
 
 #### cimcb_lite.plot
 - [boxplot](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/boxplot.py#L8-L18): Creates a boxplot using Bokeh.
