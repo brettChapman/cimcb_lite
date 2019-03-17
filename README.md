@@ -40,36 +40,36 @@ Open with Binders:
 For futher detail on the usage refer to the docstring.
 
 #### cimcb_lite.model
-- [PLS_SIMPLS](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/PLS_SIMPLS.py)
+- [PLS_SIMPLS](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/model/PLS_SIMPLS.py#L14-L36)
 
 #### cimcb_lite.plot
-- [boxplot](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/boxplot.py)
-- [distribution](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/distribution.py)
-- [pca](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/pca.py)
-- [permutation_test](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/permutation_test.py)
-- [roc](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/roc.py)
-- [scatter](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/scattern.py)
-- [scatterCI](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/scatterCI.py)
+- [boxplot](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/boxplot.py#L8-L18)
+- [distribution](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/distribution.py#L6-L16)
+- [pca](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/pca.py#L10-L17)
+- [permutation_test](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/permutation_test.py#L13-L27)
+- [roc_plot](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/roc.py#L11-L24)
+- [scatter](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/scatter.py#L6-L16)
+- [scatterCI](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/plot/scatterCI.py#L7-L14)
 
 #### cimcb_lite.cross_val
-- [kfold](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/cross_val/kfold.py)
+- [kfold](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/cross_val/kfold.pyy#L14-L42)
 
 #### cimcb_lite.bootstrap
-- [Perc](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/Perc.py)
-- [BC](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/BC.py)
-- [BCA](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/BCA.py)
+- [Perc](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/Perc.py#L6-L35)
+- [BC](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/BC.py#L8-L37)
+- [BCA](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/bootstrap/BCA.py#L8-L36)
 
 #### cimcb_lite.utils
-- [binary_metrics](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/binary_metrics.py)
-- [ci95_ellipse](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/ci95_ellipse.py)
-- [binary_metrics](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/binary_metrics.py)
-- [knnimpute](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/knnimpute.py)
-- [load_dataXL](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/load_dataXL.py)
-- [nested_getattr](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/nested_getattr.py)
-- [scale](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/scale.py)
-- [table_check](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/table_check.py)
-- [univariate_2class](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/univariate_2class.py)
-- [wmean](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/wmean.py)
+- [binary_metrics](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/binary_metrics.py#L5-L23)
+- [ci95_ellipse](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/ci95_ellipse.py#L6-L28)
+- [binary_metrics](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/binary_metrics.py#L5-L23)
+- [knnimpute](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/knnimpute.py#L7-L22)
+- [load_dataXL](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/load_dataXL.py#L7-L29)
+- [nested_getattr](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/nested_getattr.py#L4-L5)
+- [scale](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/scale.py#L4-L42)
+- [table_check](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/table_check.py#L4-L17)
+- [univariate_2class](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/univariate_2class.py#L8-L35)
+- [wmean](https://github.com/KevinMMendez/cimcb_lite/blob/master/cimcb_lite/utils/wmean.py#L4-L19)
 
 ### License
 cimcb_lite is licensed under the ___ license. 
