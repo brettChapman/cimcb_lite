@@ -25,6 +25,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     Y : array-like, shape = [n_samples, 1]
         Response variables, where n_samples is the number of samples.
     """
+    
     model = deepcopy(model)
 
     # Get train and test idx using Stratified KFold
