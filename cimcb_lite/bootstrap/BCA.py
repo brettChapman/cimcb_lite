@@ -33,7 +33,6 @@ class BCA(BaseBootstrap):
     bootci : dict of arrays
         Keys correspond to attributes in bootlist.
         Each array contains 95% confidence intervals.
-
     """
 
     def __init__(self, model, X, Y, bootlist, bootnum=100, seed=None):
