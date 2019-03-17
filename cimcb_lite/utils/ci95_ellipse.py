@@ -25,7 +25,6 @@ def ci95_ellipse(data, type="pop"):
         returns an 1d array (of 0/1) with length n_samples
         0 : ith sample is outside of ellipse
         1 : ith sample is inside of ellipse
-
     """
 
     # Build and fit PCA model
