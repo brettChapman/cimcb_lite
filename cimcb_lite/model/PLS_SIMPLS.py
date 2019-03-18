@@ -42,7 +42,7 @@ class PLS_SIMPLS(BaseModel):
 
     def train(self, X, Y):
         """ Fit the PLS model, save additional stats (as attributes) and return Y predicted values.
-        
+
         Parameters
         ----------
         X : array-like, shape = [n_samples, n_features]
@@ -50,7 +50,7 @@ class PLS_SIMPLS(BaseModel):
 
         Y : array-like, shape = [n_samples, 1]
             Response variables, where n_samples is the number of samples.
-        
+
         Returns
         -------
         y_pred_train : array-like, shape = [n_samples, 1]
@@ -104,7 +104,7 @@ class PLS_SIMPLS(BaseModel):
 
     def test(self, X):
         """Calculate and return Y predicted value.
-        
+
         Parameters
         ----------
         X : array-like, shape = [n_samples, n_features]
@@ -125,7 +125,16 @@ class PLS_SIMPLS(BaseModel):
         return y_pred_test
 
     def plot_projections(self, label=None, size=12):
-        """ Plots latent variables projections against each other in a Grid format."""
+        """ Plots latent variables projections against each other in a Grid format.
+
+        Parameters
+        ----------
+        label : DataFrame or None, (default None)
+            hovertool for scatterplot.
+
+        size : positive integer, (default 12)
+            size specifies circle size for scatterplot.
+        """
 
         num_x_scores = len(self.model.x_scores_.T)
 

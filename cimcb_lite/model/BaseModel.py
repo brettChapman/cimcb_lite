@@ -39,18 +39,18 @@ class BaseModel(ABC):
 
     def evaluate(self, testset=None, specificity=False, cutoffscore=False, bootnum=1000):
         """Plots a figure containing a Violin plot, Distribution plot, ROC plot and Binary Metrics statistics.
-        
+
         Parameters
         ----------
         testset : array-like, shape = [n_samples, 2] or None, (default None)
-            If testset is None, use train Y and train Y predicted for evaluate. Alternatively, testset is used to evaluate model in the format [Ytest, Ypred]. 
-        
+            If testset is None, use train Y and train Y predicted for evaluate. Alternatively, testset is used to evaluate model in the format [Ytest, Ypred].
+
         specificity : number or False, (default False)
             Use the specificity to draw error bar. When False, use the cutoff score of 0.5.
-        
+
         cutoffscore : number or False, (default False)
             Use the cutoff score to draw error bar. When False, use the specificity selected.
-        
+
         bootnum : a positive integer, (default 1000)
             The number of bootstrap samples used in the computation.
         """
@@ -149,25 +149,26 @@ class BaseModel(ABC):
         tabledata = dict(
             evaluate=[["Train"]],
             manw_pval=[["{}".format(manw_pval_round)]],
-            auc=[["{} ({}, {})".format(stats_round["auc"], bootci_round["auc"][0], bootci_round["auc"][1])]],
-            accuracy=[["{} ({}, {})".format(stats_round["accuracy"], bootci_round["accuracy"][0], bootci_round["accuracy"][1])]],
-            precision=[["{} ({}, {})".format(stats_round["precision"], bootci_round["precision"][0], bootci_round["precision"][1])]],
-            sensitivity=[["{} ({}, {})".format(stats_round["sensitivity"], bootci_round["sensitivity"][0], bootci_round["sensitivity"][1])]],
-            specificity=[["{} ({}, {})".format(stats_round["specificity"], bootci_round["specificity"][0], bootci_round["specificity"][1])]],
-            F1score=[["{} ({}, {})".format(stats_round["F1score"], bootci_round["F1score"][0], bootci_round["F1score"][1])]],
-            R2=[["{} ({}, {})".format(stats_round["R2"], bootci_round["R2"][0], bootci_round["R2"][1])]],)
+            auc=[["{} ({}, {})".format(stats_round["AUC"], bootci_round["AUC"][0], bootci_round["AUC"][1])]],
+            accuracy=[["{} ({}, {})".format(stats_round["ACCURACY"], bootci_round["ACCURACY"][0], bootci_round["ACCURACY"][1])]],
+            precision=[["{} ({}, {})".format(stats_round["PRECISION"], bootci_round["PRECISION"][0], bootci_round["PRECISION"][1])]],
+            sensitivity=[["{} ({}, {})".format(stats_round["SENSITIVITY"], bootci_round["SENSITIVITY"][0], bootci_round["SENSITIVITY"][1])]],
+            specificity=[["{} ({}, {})".format(stats_round["SPECIFICITY"], bootci_round["SPECIFICITY"][0], bootci_round["SPECIFICITY"][1])]],
+            F1score=[["{} ({}, {})".format(stats_round["F1-SCORE"], bootci_round["F1-SCORE"][0], bootci_round["F1-SCORE"][1])]],
+            R2=[["{} ({}, {})".format(stats_round["R²"], bootci_round["R²"][0], bootci_round["R²"][1])]],
+        )
 
         # Append test data
         if testset is not None:
             tabledata["evaluate"].append(["Test"])
             tabledata["manw_pval"].append([testmanw_pval_round])
-            tabledata["auc"].append([teststats_round["auc"]])
-            tabledata["accuracy"].append([teststats_round["accuracy"]])
-            tabledata["precision"].append([teststats_round["precision"]])
-            tabledata["sensitivity"].append([teststats_round["sensitivity"]])
-            tabledata["specificity"].append([teststats_round["specificity"]])
-            tabledata["F1score"].append([teststats_round["F1score"]])
-            tabledata["R2"].append([teststats_round["R2"]])
+            tabledata["auc"].append([teststats_round["AUC"]])
+            tabledata["accuracy"].append([teststats_round["ACCURACY"]])
+            tabledata["precision"].append([teststats_round["PRECISION"]])
+            tabledata["sensitivity"].append([teststats_round["SENSITIVITY"]])
+            tabledata["specificity"].append([teststats_round["SPECIFICITY"]])
+            tabledata["F1score"].append([teststats_round["F1-SCORE"]])
+            tabledata["R2"].append([teststats_round["R²"]])
 
         # Plot table
         source = ColumnDataSource(data=tabledata)
@@ -190,12 +191,12 @@ class BaseModel(ABC):
 
     def calc_bootci(self, bootnum=100, type="bca"):
         """Calculates bootstrap confidence intervals based on bootlist.
-        
+
         Parameters
         ----------
         bootnum : a positive integer, (default 100)
             The number of bootstrap samples used in the computation.
-        
+
         type : 'bc', 'bca', 'perc', (default 'bca')
             Methods for bootstrap confidence intervals. 'bc' is bias-corrected bootstrap confidence intervals. 'bca' is bias-corrected and accelerated bootstrap confidence intervals. 'perc' is percentile confidence intervals.
         """
@@ -209,7 +210,27 @@ class BaseModel(ABC):
         self.bootci = boot.run()
 
     def plot_featureimportance(self, PeakTable, peaklist=None, ylabel="Label", sort=True):
-        """Plots feature importance metrics."""
+        """Plots feature importance metrics.
+
+        Parameters
+        ----------
+        PeakTable : DataFrame
+            Peak sheet with the required columns.
+
+        peaklist : list or None, (default None)
+            Peaks to include in plot (the default is to include all samples).
+
+        ylabel : string, (default "Label")
+            Name of column in PeakTable to use as the ylabel.
+
+        sort : boolean, (default True)
+            Whether to sort plots in absolute descending order.
+
+        Returns
+        -------
+        Peaksheet : DataFrame
+            New PeakTable with added "Coef" and "VIP" columns (+ "Coef-95CI" and  "VIP-95CI" if calc_bootci is used prior to plot_featureimportance).
+        """
         if not hasattr(self, "bootci"):
             print("Use method calc_bootci prior to plot_featureimportance to add 95% confidence intervals to plots.")
             ci_coef = None
@@ -251,7 +272,13 @@ class BaseModel(ABC):
         return Peaksheet
 
     def permutation_test(self, nperm=100):
-        """Plots permutation test figures."""
+        """Plots permutation test figures.
+
+        Parameters
+        ----------
+        nperm : positive integer, (default 100)
+            Number of permutations.
+        """
         fig = permutation_test(self, self.X, self.Y, nperm=nperm)
         output_notebook()
         show(fig)

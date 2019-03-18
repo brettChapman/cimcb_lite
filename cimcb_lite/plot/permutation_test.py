@@ -54,7 +54,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
 
     # Extract R2, Q2
     stats = []
-    stats.append([stats_full["R2"], stats_cv["R2"], 1])
+    stats.append([stats_full["R²"], stats_cv["R²"], 1])
 
     # For each permutation, shuffle Y and calculate R2, Q2 and append to stats
     for i in tqdm(range(nperm), desc="Permutation Resample"):
@@ -89,7 +89,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
 
         # Calculate correlation using Pearson product-moment correlation coefficients and append permuted R2, Q2 and correlation coefficient
         corr = abs(np.corrcoef(Y_shuff, Y)[0, 1])
-        stats.append([stats_full["R2"], stats_cv["R2"], corr])
+        stats.append([stats_full["R²"], stats_cv["R²"], corr])
 
     # Split data for plotting (corr, r2, q2)
     stats_r2 = []

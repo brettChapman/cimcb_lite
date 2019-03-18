@@ -42,13 +42,13 @@ def binary_metrics(y_true, y_pred, cut_off=0.5):
 
     # Binary statistics dictionary
     stats = {}
-    stats["R2"] = 1 - (sum((y_true_arr - y_pred_arr) ** 2) / sum((y_true_arr - np.mean(y_true_arr)) ** 2))
-    stats["auc"] = roc_auc_score(y_true_arr, y_pred_arr)
-    stats["accuracy"] = safe_div((tp + tn), (tp + tn + fp + fn))
-    stats["precision"] = safe_div((tp), (tp + fp))
-    stats["sensitivity"] = safe_div((tp), (tp + fn))
-    stats["specificity"] = safe_div((tn), (tn + fp))
-    stats["F1score"] = safe_div((2 * tp), (2 * tp + fp + fn))
+    stats["R²"] = 1 - (sum((y_true_arr - y_pred_arr) ** 2) / sum((y_true_arr - np.mean(y_true_arr)) ** 2))
+    stats["AUC"] = roc_auc_score(y_true_arr, y_pred_arr)
+    stats["ACCURACY"] = safe_div((tp + tn), (tp + tn + fp + fn))
+    stats["PRECISION"] = safe_div((tp), (tp + fp))
+    stats["SENSITIVITY"] = safe_div((tp), (tp + fn))
+    stats["SPECIFICITY"] = safe_div((tn), (tn + fp))
+    stats["F1-SCORE"] = safe_div((2 * tp), (2 * tp + fp + fn))
     return stats
 
 

@@ -68,9 +68,11 @@ class kfold(BaseCrossVal):
             # Create dictionaries with binary_metrics
             stats_full_i = binary_metrics(self.Y, self.ypred_full[i])
             stats_cv_i = binary_metrics(self.Y, self.ypred_cv[i])
-            # Add _cv to all metrics in stats_cv and change R2_cv to Q2
-            stats_cv_i = {k + "_cv": v for k, v in stats_cv_i.items()}
-            stats_cv_i["Q2"] = stats_cv_i.pop("R2_cv")
+            # Rename columns
+            stats_full_i = {k + "full": v for k, v in stats_full_i.items()}
+            stats_cv_i = {k + "cv": v for k, v in stats_cv_i.items()}
+            stats_cv_i["R²"] = stats_full_i.pop("R²full")
+            stats_cv_i["Q²"] = stats_cv_i.pop("R²cv")
             # Combine and append
             stats_combined = {**stats_full_i, **stats_cv_i}
             stats_list.append(stats_combined)
@@ -148,22 +150,36 @@ class kfold(BaseCrossVal):
         table.columns = param_list_string
         return table
 
-    def plot(self):
-        "Create a R2/Q2 plot."
+    def plot(self, metric="r2q2"):
+        """Create a full/cv plot using based on metric selected.
 
-        # get r2, q2, and diff
-        r2 = self.table.loc["R2"]
-        q2 = self.table.loc["Q2"]
-        diff = r2 - q2
+        Parameters
+        ----------
+        metric : string, (default "r2q2")
+            metric has to be either "r2q2", "auc", "acc", "f1score", "prec", "sens", or "spec".
+        """
 
-        # round r2, q2, and diff for hovertool
-        r2_text = []
-        q2_text = []
-        diff_text = []
-        for j in range(len(r2)):
-            r2_text.append("%.2f" % round(r2[j], 2))
-            q2_text.append("%.2f" % round(q2[j], 2))
-            diff_text.append("%.2f" % round(diff[j], 2))
+        # Choose metric to plot
+        metric_title = np.array(["ACCURACY", "AUC", "F1-SCORE", "PRECISION", "R²", "SENSITIVITY", "SPECIFICITY"])
+        metric_list = np.array(["acc", "auc", "f1score", "prec", "r2q2", "sens", "spec"])
+        metric_idx = np.where(metric_list == metric)[0][0]
+
+        # get full, cv, and diff
+        full = self.table.iloc[2 * metric_idx + 1]
+        cv = self.table.iloc[2 * metric_idx]
+        diff = full - cv
+        full_text = self.table.iloc[2 * metric_idx + 1].name
+        cv_text = self.table.iloc[2 * metric_idx].name
+        diff_text = "DIFFERENCE " + "(" + full_text + " - " + cv_text + ")"
+
+        # round full, cv, and diff for hovertool
+        full_hover = []
+        cv_hover = []
+        diff_hover = []
+        for j in range(len(full)):
+            full_hover.append("%.2f" % round(full[j], 2))
+            cv_hover.append("%.2f" % round(cv[j], 2))
+            diff_hover.append("%.2f" % round(diff[j], 2))
 
         # get key, values (as string) from param_dict (key -> title, values -> x axis values)
         for k, v in self.param_dict.items():
@@ -172,94 +188,111 @@ class kfold(BaseCrossVal):
         values_string = [str(i) for i in values]
 
         # store data in ColumnDataSource for Bokeh
-        data = dict(r2=r2, q2=q2, diff=diff, r2_text=r2_text, q2_text=q2_text, diff_text=diff_text, values_string=values_string)
+        data = dict(full=full, cv=cv, diff=diff, full_hover=full_hover, cv_hover=cv_hover, diff_hover=diff_hover, values_string=values_string)
         source = ColumnDataSource(data=data)
 
         fig1_yrange = (min(diff) - max(0.1 * (min(diff)), 0.03), max(diff) + max(0.1 * (max(diff)), 0.03))
-        fig1_xrange = (min(q2) - max(0.1 * (min(q2)), 0.03), max(q2) + max(0.1 * (max(q2)), 0.03))
+        fig1_xrange = (min(cv) - max(0.1 * (min(cv)), 0.03), max(cv) + max(0.1 * (max(cv)), 0.03))
+        fig1_title = diff_text + " vs " + cv_text
 
         # Figure 1 (DIFFERENCE (R2 - Q2) vs. Q2)
-        fig1 = figure(x_axis_label="Q²", y_axis_label="DIFFERENCE (R² - Q²)", title="DIFFERENCE (R² - Q²) vs Q²", tools="tap,pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select", y_range=fig1_yrange, x_range=fig1_xrange, plot_width=480, plot_height=400)
-        fig1.title.text_font_size = "14pt"
+        fig1 = figure(x_axis_label=cv_text, y_axis_label=diff_text, title=fig1_title, tools="tap,pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select", y_range=fig1_yrange, x_range=fig1_xrange, plot_width=485, plot_height=405)
 
         # Figure 1: Add a line
-        fig1_line = fig1.line(q2, diff, line_width=2, line_color="black", line_alpha=0.25)
+        fig1_line = fig1.line(cv, diff, line_width=2, line_color="black", line_alpha=0.25)
 
         # Figure 1: Add circles (interactive click)
-        fig1_circ = fig1.circle("q2", "diff", size=17, alpha=0.7, color="green", source=source)
+        fig1_circ = fig1.circle("cv", "diff", size=17, alpha=0.7, color="green", source=source)
         fig1_circ.selection_glyph = Circle(fill_color="green", line_width=2, line_color="black")
         fig1_circ.nonselection_glyph.fill_color = "green"
         fig1_circ.nonselection_glyph.fill_alpha = 0.4
         fig1_circ.nonselection_glyph.line_color = "white"
-        fig1_labels = LabelSet(x="q2", y="diff", text="values_string", level="glyph", source=source, render_mode="canvas", x_offset=-4, y_offset=-7, text_font_size="10pt", text_color="white")
+        fig1_labels = LabelSet(x="cv", y="diff", text="values_string", level="glyph", source=source, render_mode="canvas", x_offset=-4, y_offset=-7, text_font_size="10pt", text_color="white")
         fig1.add_layout(fig1_labels)
 
         # Figure 1: Add hovertool
-        fig1.add_tools(HoverTool(renderers=[fig1_circ], tooltips=[(key, "@values_string"), ("R²", "@r2_text"), ("Q²", "@q2_text"), ("Diff", "@diff_text")]))
+        fig1.add_tools(HoverTool(renderers=[fig1_circ], tooltips=[(full_text, "@full_hover"), (cv_text, "@cv_hover"), ("Diff", "@diff_hover")]))
 
         # Figure 1: Extra formating
         fig1.axis.major_label_text_font_size = "8pt"
-        fig1.xaxis.axis_label_text_font_size = "12pt"
-        fig1.yaxis.axis_label_text_font_size = "12pt"
+        if metric is "r2q2" or metric is "auc":
+            fig1.title.text_font_size = "12pt"
+            fig1.xaxis.axis_label_text_font_size = "10pt"
+            fig1.yaxis.axis_label_text_font_size = "10pt"
+        else:
+            fig1.title.text_font_size = "10pt"
+            fig1.xaxis.axis_label_text_font_size = "9pt"
+            fig1.yaxis.axis_label_text_font_size = "9pt"
 
-        # Figure 2: R2/Q2
-        fig2 = figure(x_axis_label="components", y_axis_label="Value", title="R²/Q² vs no. of components", plot_width=480, plot_height=400, x_range=pd.unique(values_string), y_range=(0, 1.1), tools="pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select")
-        fig2.title.text_font_size = "14pt"
+        # Figure 2: full/cv
+        fig2_title = full_text + "/" + cv_text + " vs no. of components"
+        fig2 = figure(x_axis_label="components", y_axis_label="Value", title=fig2_title, plot_width=485, plot_height=405, x_range=pd.unique(values_string), y_range=(0, 1.1), tools="pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select")
 
         # Figure 2: add confidence intervals if bootnum > 1
         if self.bootnum > 1:
-            lower_ci_r2 = []
-            upper_ci_r2 = []
-            lower_ci_q2 = []
-            upper_ci_q2 = []
-            # Get all upper, lower 95% CI (r2/q2) for each specific n_component and append
+            lower_ci_full = []
+            upper_ci_full = []
+            lower_ci_cv = []
+            upper_ci_cv = []
+            # Get all upper, lower 95% CI (full/cv) for each specific n_component and append
             for m in range(len(self.full_boot_metrics)):
-                r2_boot = []
-                q2_boot = []
+                full_boot = []
+                cv_boot = []
                 for k in range(len(self.full_boot_metrics[0])):
-                    r2_boot.append(self.full_boot_metrics[m][k]["R2"])
-                    q2_boot.append(self.cv_boot_metrics[m][k]["R2"])  # Wasn't renamed to Q2
+                    full_boot.append(self.full_boot_metrics[m][k][metric_title[metric_idx]])
+                    cv_boot.append(self.cv_boot_metrics[m][k][metric_title[metric_idx]])
                 # Calculated percentile 95% CI and append
-                r2_bias = np.mean(r2_boot) - r2[m]
-                q2_bias = np.mean(q2_boot) - q2[m]
-                lower_ci_r2.append(np.percentile(r2_boot, 2.5) - r2_bias)
-                upper_ci_r2.append(np.percentile(r2_boot, 97.5) - r2_bias)
-                lower_ci_q2.append(np.percentile(q2_boot, 2.5) - q2_bias)
-                upper_ci_q2.append(np.percentile(q2_boot, 97.5) - q2_bias)
+                full_bias = np.mean(full_boot) - full[m]
+                cv_bias = np.mean(cv_boot) - cv[m]
+                lower_ci_full.append(np.percentile(full_boot, 2.5) - full_bias)
+                upper_ci_full.append(np.percentile(full_boot, 97.5) - full_bias)
+                lower_ci_cv.append(np.percentile(cv_boot, 2.5) - cv_bias)
+                upper_ci_cv.append(np.percentile(cv_boot, 97.5) - cv_bias)
 
             # Plot as a patch
             x_patch = np.hstack((values_string, values_string[::-1]))
-            y_patch_r2 = np.hstack((lower_ci_r2, upper_ci_r2[::-1]))
+            y_patch_r2 = np.hstack((lower_ci_full, upper_ci_full[::-1]))
             fig2.patch(x_patch, y_patch_r2, alpha=0.10, color="red")
-            y_patch_q2 = np.hstack((lower_ci_q2, upper_ci_q2[::-1]))
+            y_patch_q2 = np.hstack((lower_ci_cv, upper_ci_cv[::-1]))
             fig2.patch(x_patch, y_patch_q2, alpha=0.10, color="blue")
 
-        # Figure 2: add r2
-        fig2_line_r2 = fig2.line(values_string, r2, line_color="red", line_width=2)
-        fig2_circ_r2 = fig2.circle("values_string", "r2", line_color="red", fill_color="white", fill_alpha=1, size=8, source=source, legend="R²")
-        fig2_circ_r2.selection_glyph = Circle(line_color="red", fill_color="white", line_width=2)
-        fig2_circ_r2.nonselection_glyph.line_color = "red"
-        fig2_circ_r2.nonselection_glyph.fill_color = "white"
-        fig2_circ_r2.nonselection_glyph.line_alpha = 0.4
+        # Figure 2: add full
+        fig2_line_full = fig2.line(values_string, full, line_color="red", line_width=2)
+        fig2_circ_full = fig2.circle("values_string", "full", line_color="red", fill_color="white", fill_alpha=1, size=8, source=source, legend=full_text)
+        fig2_circ_full.selection_glyph = Circle(line_color="red", fill_color="white", line_width=2)
+        fig2_circ_full.nonselection_glyph.line_color = "red"
+        fig2_circ_full.nonselection_glyph.fill_color = "white"
+        fig2_circ_full.nonselection_glyph.line_alpha = 0.4
 
-        # Figure 2: add q2
-        fig2_line_q2 = fig2.line(values_string, q2, line_color="blue", line_width=2)
-        fig2_circ_q2 = fig2.circle("values_string", "q2", line_color="blue", fill_color="white", fill_alpha=1, size=8, source=source, legend="Q²")
-        fig2_circ_q2.selection_glyph = Circle(line_color="blue", fill_color="white", line_width=2)
-        fig2_circ_q2.nonselection_glyph.line_color = "blue"
-        fig2_circ_q2.nonselection_glyph.fill_color = "white"
-        fig2_circ_q2.nonselection_glyph.line_alpha = 0.4
+        # Figure 2: add cv
+        fig2_line_cv = fig2.line(values_string, cv, line_color="blue", line_width=2)
+        fig2_circ_cv = fig2.circle("values_string", "cv", line_color="blue", fill_color="white", fill_alpha=1, size=8, source=source, legend=cv_text)
+        fig2_circ_cv.selection_glyph = Circle(line_color="blue", fill_color="white", line_width=2)
+        fig2_circ_cv.nonselection_glyph.line_color = "blue"
+        fig2_circ_cv.nonselection_glyph.fill_color = "white"
+        fig2_circ_cv.nonselection_glyph.line_alpha = 0.4
 
         # Add hovertool and taptool
-        fig2.add_tools(HoverTool(renderers=[fig2_circ_r2], tooltips=[("R²", "@r2")], mode="vline"))
-        fig2.add_tools(HoverTool(renderers=[fig2_circ_q2], tooltips=[("Q²", "@q2")], mode="vline"))
-        fig2.add_tools(TapTool(renderers=[fig2_circ_r2, fig2_circ_q2]))
+        fig2.add_tools(HoverTool(renderers=[fig2_circ_full], tooltips=[(full_text, "@full_hover")], mode="vline"))
+        fig2.add_tools(HoverTool(renderers=[fig2_circ_cv], tooltips=[(cv_text, "@cv_hover")], mode="vline"))
+        fig2.add_tools(TapTool(renderers=[fig2_circ_full, fig2_circ_cv]))
 
         # Figure 2: Extra formating
         fig2.axis.major_label_text_font_size = "8pt"
-        fig2.xaxis.axis_label_text_font_size = "12pt"
-        fig2.yaxis.axis_label_text_font_size = "12pt"
-        fig2.legend.location = "top_left"
+        if metric is "r2q2" or metric is "auc":
+            fig2.title.text_font_size = "12pt"
+            fig2.xaxis.axis_label_text_font_size = "10pt"
+            fig2.yaxis.axis_label_text_font_size = "10pt"
+        else:
+            fig2.title.text_font_size = "10pt"
+            fig2.xaxis.axis_label_text_font_size = "9pt"
+            fig2.yaxis.axis_label_text_font_size = "9pt"
+
+        # Figure 2: legend
+        if metric is "r2q2":
+            fig2.legend.location = "top_left"
+        else:
+            fig2.legend.location = "bottom_right"
 
         # Create a grid and output figures
         grid = np.full((1, 2), None)
