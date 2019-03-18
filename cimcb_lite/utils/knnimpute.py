@@ -20,7 +20,10 @@ def knnimpute(x, k=3):
     z: array-like
         An array-like object corresponding to x with NaNs imputed.
     """
-
+    
+    # Tranpose x so we treat columns as features, and rows as samples
+    x = x.T
+    
     # Error check for k value
     if type(k) is not int:
         raise ValueError("k is not an integer")
@@ -33,14 +36,14 @@ def knnimpute(x, k=3):
     # z is the returned array with NaNs imputed
     z = x.copy()
 
-    # Use rows without NaNs for knnimpute
+    # Use columns without NaNs for knnimpute
     nan_check = np.isnan(x)
-    no_nan = abs(sum(nan_check.T) - 1)
+    no_nan = np.where(sum(nan_check.T) == 0, 1, 0) 
 
-    # Error check that not all rows have NaNs
+    # Error check that not all columns have NaNs
     x_no_nan = x[no_nan == 1]
     if x_no_nan.size == 0:
-        raise ValueError("All rows of the input data contain missing values. Unable to impute missing values.")
+        raise ValueError("All colummns of the input data contain missing values. Unable to impute missing values.")
 
     # Calculate pairwise distances between columns, and covert to square-form distance matrix
     pair_dist = pdist(x_no_nan.T, metric="euclidean")
@@ -91,4 +94,7 @@ def knnimpute(x, k=3):
             if imp_val is not np.nan:
                 z[nan_rows[i], nan_cols[i]] = imp_val
                 break
+                
+    # Tranpose z 
+    z = z.T
     return z
