@@ -1,6 +1,6 @@
 package:
   name: cimcb_lite
-  version: 0.0.20
+  version: 0.0.21
 
 source:
   path: ../
@@ -37,3 +37,5 @@ requirements:
 
 about:
   home: https://github.com/CIMCB
+  license: http://www.apache.org/licenses/LICENSE-2.0.html
+  summary: "This is a pre-release."
