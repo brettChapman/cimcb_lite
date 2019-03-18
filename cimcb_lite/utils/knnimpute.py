@@ -95,6 +95,6 @@ def knnimpute(x, k=3):
                 z[nan_rows[i], nan_cols[i]] = imp_val
                 break
                 
-    # Tranpose z 
+    # Transpose z 
     z = z.T
     return z
