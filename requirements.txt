@@ -1,8 +1,0 @@
-numpy 
-pandas
-bokeh
-scipy
-scikit-learn
-statsmodels
-tqdm
-xlrd
