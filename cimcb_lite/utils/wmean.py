@@ -27,18 +27,19 @@ def wmean(x, weights):
     infs = np.isinf(weights)
 
     # If all x are nans, return np.nan
-    if nans.all() is True:
+    if nans.all() == True:
         m = np.nan
         return m
 
     # If there are infinite weights, use the corresponding x
-    if infs.any() is True:
+    if infs.any() == True:
         m = np.nanmean(x[infs])
         return m
 
     # Set NaNs to zero
     x[nans] = 0
-
+    weights[nans] = 0
+    
     # Normalize the weights + calculate Weighted Mean
     weights = weights / np.sum(weights)
     m = np.matmul(weights, x)
