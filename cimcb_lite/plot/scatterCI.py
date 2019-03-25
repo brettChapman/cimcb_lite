@@ -4,7 +4,7 @@ from bokeh.models import Span, Whisker
 from bokeh.plotting import ColumnDataSource, figure
 
 
-def scatterCI(x, ci=None, label=None, hoverlabel=None, hline=0, sort_abs=False, col_hline=True, col_palette=None, title="Scatter CI Plot", xlabel="Peak", ylabel="Value", width=200, height=400, legend=True, font_size="20pt", label_font_size="13pt", linkrange=None):
+def scatterCI(x, ci=None, label=None, hoverlabel=None, hline=0, sort_abs=False, col_hline=True, col_palette=None, title="Scatter CI Plot", xlabel="Peak", ylabel="Value", width=200, height=300, legend=True, font_size="20pt", label_font_size="13pt", linkrange=None):
     """Creates a scatterCI plot using Bokeh.
 
     Required Parameters
@@ -12,7 +12,6 @@ def scatterCI(x, ci=None, label=None, hoverlabel=None, hline=0, sort_abs=False, 
     X : array-like, shape = [n_samples]
         Inpute data
     """
-
     # If label is None, give an index based on input order
     if label is None:
         label_copy = []
@@ -20,6 +19,19 @@ def scatterCI(x, ci=None, label=None, hoverlabel=None, hline=0, sort_abs=False, 
             label_copy.append(str(i))
     else:
         label_copy = deepcopy(label)
+
+    # Ensure label_copy is unique and under 60 characters until supported by Bokeh
+    label_copy = [elem[:59] for elem in label_copy]  # Limit Label characters limit to 59
+    label_copy = np.array(label_copy).tolist()
+    label_unique = set(label_copy)
+    label_indices = {value: [i for i, v in enumerate(label_copy) if v == value] for value in label_unique}
+    for key, value in label_indices.items():
+        if len(value) > 1:
+            for i in range(len(value)):
+                label_copy[value[i]] = (str(" ") * i) + label_copy[value[i]]
+
+    # Make sure height accounts for the max length of label
+    height = height + 5 * len(max(label_copy, key=len))
 
     # If colour palette is None (default):
     if col_palette is None:

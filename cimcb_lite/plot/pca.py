@@ -27,8 +27,8 @@ def pca(X, pcx=1, pcy=2, group_label=None, sample_label=None, peak_label=None):
     y_score = scores_[:, (pcy - 1)]
     x_expvar = explained_var_[(pcx - 1)]
     y_expvar = explained_var_[(pcy - 1)]
-    x_load = model.components_[:, (pcx - 1)]
-    y_load = model.components_[:, (pcy - 1)]
+    x_load = model.components_[(pcx - 1), :]
+    y_load = model.components_[(pcy - 1), :]
 
     # Colour for fig_score
     if group_label is None:
@@ -41,7 +41,7 @@ def pca(X, pcx=1, pcy=2, group_label=None, sample_label=None, peak_label=None):
 
     # Scores plot
     fig_score = scatter(x_score, y_score, group=group_label, label=sample_label, size=5, xlabel="PC {} ({:0.1f}%)".format(pcx, x_expvar), ylabel="PC {} ({:0.1f}%)".format(pcy, y_expvar), title="PCA Score Plot (PC{} vs. PC{})".format(pcx, pcy), font_size="15pt", width=490, height=430, hover_xy=False, col_palette=col)
-
+    print(len(x_load))
     # Loadings plot
     fig_load = scatter(x_load, y_load, size=7, label=peak_label, xlabel="PC {} ({:0.1f}%)".format(pcx, x_expvar), ylabel="PC {} ({:0.1f}%)".format(pcy, y_expvar), title="PCA Loadings Plot (PC{} vs. PC{})".format(pcx, pcy), font_size="15pt", width=490, height=430, hover_xy=False, shape="triangle", legend=False, hline=True, vline=True)
 

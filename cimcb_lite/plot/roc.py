@@ -145,8 +145,14 @@ def roc_calculate(Ytrue, Yscore, bootnum=1000, metric=None, val=None):
         bootci_stats = {}
         for i in boot_stats[0].keys():
             stats_i = [k[i] for k in boot_stats]
-            lowci = np.percentile(stats_i, 2.5)
-            uppci = np.percentile(stats_i, 97.5)
+            stats_i = np.array(stats_i)
+            stats_i = stats_i[~np.isnan(stats_i)]  # Remove nans
+            try:
+                lowci = np.percentile(stats_i, 2.5)
+                uppci = np.percentile(stats_i, 97.5)
+            except IndexError:
+                lowci = np.nan
+                uppci = np.nan
             bootci_stats[i] = [lowci, uppci]
 
     # Get CI for tpr
@@ -182,6 +188,12 @@ def get_sens_cuttoff(Ytrue, Yscore, specificity_val):
     fpr0 = 1 - specificity_val
     fpr, sensitivity, thresholds = metrics.roc_curve(Ytrue, Yscore, pos_label=1, drop_intermediate=False)
     idx = np.abs(fpr - fpr0).argmin()  # this find the closest value in fpr to fpr0
+    # Check that this is not a perfect roc curve
+    # If it is perfect, allow sensitivity = 1, rather than 0
+    if specificity_val == 1 and sensitivity[idx] == 0:
+        for i in range(len(fpr)):
+            if fpr[i] == 1 and sensitivity[i] == 1:
+                return 1, 0.5
     return sensitivity[idx], thresholds[idx]
 
 
