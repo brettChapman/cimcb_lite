@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 from tqdm import tqdm
 from scipy.stats import norm
 from .BaseBootstrap import BaseBootstrap
@@ -101,23 +102,33 @@ class BCA(BaseBootstrap):
                         meansum[i] = meansum[i] + 1
             prop = meansum / nboot  # Proportion of times boot mean > obs mean
             z0 = -norm.ppf(prop, loc=0, scale=1)
-            
+
             # new alpha
             jmean = np.mean(jackstat, axis=0)
             num = np.sum((jmean - jackstat) ** 3, axis=0)
             den = np.sum((jmean - jackstat) ** 2, axis=0)
-            ahat = num / (6 * den ** (3 / 2)) 
+            ahat = num / (6 * den ** (3 / 2))
 
-            zL = z0 + norm.ppf(0.05 / 2, loc=0, scale=1)
-            pct1 = 100 * norm.cdf((z0 + zL / (1 - ahat * zL)))
-            zU = z0 + norm.ppf((1 - 0.05 / 2), loc=0, scale=1)
-            pct2 = 100 * norm.cdf((z0 + zU / (1 - ahat * zU)))
+            # Ignore warnings as they are delt with at line 123 with try/except
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                zL = z0 + norm.ppf(0.05 / 2, loc=0, scale=1)
+                pct1 = 100 * norm.cdf((z0 + zL / (1 - ahat * zL)))
+                zU = z0 + norm.ppf((1 - 0.05 / 2), loc=0, scale=1)
+                pct2 = 100 * norm.cdf((z0 + zU / (1 - ahat * zU)))
 
             boot_ci = []
             for i in range(len(pct1)):
                 bootstat_i = [item[i] for item in bootstat]
-                append_low = np.percentile(bootstat_i, pct1[i])
-                append_upp = np.percentile(bootstat_i, pct2[i])
+                try:
+                    append_low = np.percentile(bootstat_i, pct1[i])
+                    append_upp = np.percentile(bootstat_i, pct2[i])
+                except ValueError:
+                    # USE BC if BCA is not possible
+                    pct1 = 100 * norm.cdf((2 * z0 + zalpha))
+                    pct2 = 100 * norm.cdf((2 * z0 - zalpha))
+                    append_low = np.percentile(bootstat_i, pct1[i])
+                    append_upp = np.percentile(bootstat_i, pct2[i])
                 boot_ci.append([append_low, append_upp])
             boot_ci = np.array(boot_ci)
 
