@@ -57,10 +57,10 @@ def roc_plot(fpr, tpr, tpr_ci, width=450, height=350, xlabel="1-Specificity", yl
         # Edge case: If this is a perfect roc curve, and specificity >= 1, make sure error_bar is at (0,1) not (0,0)
         if errorbar >= 1:
             for i in range(len(fpr)):
-                if fpr[i] == 1 and tpr[i] == 1:
+                if fpr[i] == 0 and tpr[i] == 1:
                     fpr_eb = 0
                     tpr_eb = 1
-                    tpr_lowci_eb = 0
+                    tpr_lowci_eb = 1
                     tpr_uppci_eb = 1
 
         roc_whisker_line = fig.multi_line([[fpr_eb, fpr_eb]], [[tpr_lowci_eb, tpr_uppci_eb]], line_alpha=1, line_color="black")
