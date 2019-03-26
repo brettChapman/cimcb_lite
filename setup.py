@@ -26,7 +26,8 @@ setup(
         "scikit-learn",
         "statsmodels",
         "tqdm",
-        "xlrd"],
+        "xlrd",
+        "tornado<6"],
     author='Kevin Mendez, David Broadhurst',
     author_email='k.mendez@ecu.edu.au, d.broadhurst@ecu.edu.au',
 )
