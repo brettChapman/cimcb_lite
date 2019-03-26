@@ -109,7 +109,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     # Figure 1
     data = {"corr": stats_corr, "r2": stats_r2, "q2": stats_q2}
     source = ColumnDataSource(data=data)
-    fig1 = figure(plot_width=470, plot_height=410, x_range=(-0.15, 1.15), x_axis_label="Correlation", y_axis_label="R²/Q²")
+    fig1 = figure(plot_width=470, plot_height=410, x_range=(-0.15, 1.15), x_axis_label="Correlation", y_axis_label="R² & Q²")
     # Lines
     r2slope = Slope(gradient=r2gradient, y_intercept=r2yintercept, line_color="black", line_width=2, line_alpha=0.3)
     q2slope = Slope(gradient=q2gradient, y_intercept=q2yintercept, line_color="black", line_width=2, line_alpha=0.3)
@@ -150,7 +150,7 @@ def permutation_test(model, X, Y, nperm=100, folds=8):
     x2_pdf_grid = [-x for x in x2_pdf_grid]
 
     # Figure 2
-    fig2 = figure(plot_width=470, plot_height=410, x_range=(min(x2_grid) * 1.1, max(stats_r2[0], max(x1_grid)) + 0.65), y_range=((min(x2_pdf_grid) - 1) * 1.2, (max(x1_pdf_grid) + 1) * 1.1), x_axis_label="R²/Q²", y_axis_label="p.d.f.")
+    fig2 = figure(plot_width=470, plot_height=410, x_range=(min(x2_grid) * 1.1, max(stats_r2[0], max(x1_grid)) + 0.65), y_range=((min(x2_pdf_grid) - 1) * 1.2, (max(x1_pdf_grid) + 1) * 1.1), x_axis_label="R² & Q²", y_axis_label="p.d.f.")
     slope_0 = Span(location=0, dimension="width", line_color="black", line_width=2, line_alpha=0.3)
     fig2.add_layout(slope_0)
 
