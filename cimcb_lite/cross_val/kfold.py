@@ -225,7 +225,7 @@ class kfold(BaseCrossVal):
             fig1.yaxis.axis_label_text_font_size = "9pt"
 
         # Figure 2: full/cv
-        fig2_title = full_text + "/" + cv_text + " vs no. of components"
+        fig2_title = full_text + " & " + cv_text + " vs no. of components"
         fig2 = figure(x_axis_label="components", y_axis_label="Value", title=fig2_title, plot_width=485, plot_height=405, x_range=pd.unique(values_string), y_range=(0, 1.1), tools="pan,wheel_zoom,box_zoom,reset,save,lasso_select,box_select")
 
         # Figure 2: add confidence intervals if bootnum > 1
