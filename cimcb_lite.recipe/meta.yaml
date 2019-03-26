@@ -23,6 +23,7 @@ requirements:
     - python >=3.5
     - tqdm
     - xlrd
+    - tornado <6
 
   run:
     - python >=3.5
@@ -34,6 +35,7 @@ requirements:
     - statsmodels
     - tqdm
     - xlrd
+    - tornado <6
 
 about:
   home: https://github.com/CIMCB
