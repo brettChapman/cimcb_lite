@@ -1,6 +1,6 @@
 package:
   name: cimcb_lite
-  version: 0.1.7
+  version: 0.1.8
 
 source:
   path: ../
@@ -23,7 +23,6 @@ requirements:
     - python >=3.5
     - tqdm
     - xlrd
-    - tornado <6
 
   run:
     - python >=3.5
@@ -35,7 +34,6 @@ requirements:
     - statsmodels
     - tqdm
     - xlrd
-    - tornado <6
 
 about:
   home: https://github.com/CIMCB
