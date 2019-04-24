@@ -203,12 +203,13 @@ class kfold(BaseCrossVal):
 
         # Figure 1: Add circles (interactive click)
         fig1_circ = fig1.circle("cv", "diff", size=17, alpha=0.7, color="green", source=source)
-        fig1_circ.selection_glyph = Circle(fill_color="green", line_width=2, line_color="black")
+        fig1_circ.selection_glyph = Circle(fill_color="green", line_width=2, line_color="black", fill_alpha=0.6)
         fig1_circ.nonselection_glyph.fill_color = "green"
         fig1_circ.nonselection_glyph.fill_alpha = 0.4
         fig1_circ.nonselection_glyph.line_color = "white"
-        fig1_labels = LabelSet(x="cv", y="diff", text="values_string", level="glyph", source=source, render_mode="canvas", x_offset=-4, y_offset=-7, text_font_size="10pt", text_color="white")
-        fig1.add_layout(fig1_labels)
+        fig1_text = fig1.text(x="cv", y="diff", text="values_string", source=source, text_font_size="10pt", text_color="white", x_offset=-3.5, y_offset=7)
+        fig1_text.nonselection_glyph.text_color = "white"
+        fig1_text.nonselection_glyph.text_alpha = 0.6
 
         # Figure 1: Add hovertool
         fig1.add_tools(HoverTool(renderers=[fig1_circ], tooltips=[(full_text, "@full_hover"), (cv_text, "@cv_hover"), ("Diff", "@diff_hover")]))
