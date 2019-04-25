@@ -167,7 +167,7 @@ class kfold(BaseCrossVal):
         # get full, cv, and diff
         full = self.table.iloc[2 * metric_idx + 1]
         cv = self.table.iloc[2 * metric_idx]
-        diff = full - cv
+        diff = abs(full - cv)
         full_text = self.table.iloc[2 * metric_idx + 1].name
         cv_text = self.table.iloc[2 * metric_idx].name
         diff_text = "DIFFERENCE " + "(" + full_text + " - " + cv_text + ")"
